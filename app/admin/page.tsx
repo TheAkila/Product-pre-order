@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Order, PaymentStatus } from '@/types/order';
-import { Download, Loader2, Lock } from 'lucide-react';
+import { Download, Loader2, Lock, Search } from 'lucide-react';
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,6 +11,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<PaymentStatus | 'ALL'>('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,9 +71,17 @@ export default function AdminPage() {
     a.click();
   };
 
-  const filteredOrders = filter === 'ALL' 
-    ? orders 
-    : orders.filter(order => order.paymentStatus === filter);
+  const filteredOrders = orders
+    .filter(order => filter === 'ALL' || order.paymentStatus === filter)
+    .filter(order => {
+      if (!searchQuery.trim()) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        order.name.toLowerCase().includes(query) ||
+        order.orderId.toLowerCase().includes(query) ||
+        order.phone.includes(query)
+      );
+    });
 
   const stats = {
     total: orders.length,
@@ -81,6 +90,16 @@ export default function AdminPage() {
     cancelled: orders.filter(o => o.paymentStatus === 'CANCELLED').length,
     revenue: orders.filter(o => o.paymentStatus === 'PAID').reduce((sum, o) => sum + o.amount, 0),
   };
+
+  // Size breakdown statistics
+  const sizeStats = ['S', 'M', 'L', 'XL', 'XXL'].map(size => {
+    const sizeOrders = orders.filter(o => o.size === size);
+    return {
+      size,
+      orders: sizeOrders.length,
+      quantity: sizeOrders.reduce((sum, o) => sum + o.quantity, 0),
+    };
+  });
 
   if (!isAuthenticated) {
     return (
@@ -161,9 +180,51 @@ export default function AdminPage() {
           </div>
         </div>
 
+        {/* Size Breakdown */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm mb-8">
+          <div className="mb-4">
+            <h2 className="font-heading text-xl sm:text-2xl font-bold text-brand-black mb-1">Size Breakdown</h2>
+            <p className="font-body text-sm text-slate-600">Orders and total quantities per size</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
+            {sizeStats.map((stat) => (
+              <div key={stat.size} className="bg-slate-50 rounded-xl p-4 border border-slate-200 hover:border-brand-red transition-colors">
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-red rounded-lg mb-3">
+                    <span className="font-heading text-xl font-bold text-white">{stat.size}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <div>
+                      <p className="font-body text-xs text-slate-500 uppercase tracking-wider">Orders</p>
+                      <p className="font-heading text-2xl font-bold text-brand-black">{stat.orders}</p>
+                    </div>
+                    <div className="pt-2 border-t border-slate-200">
+                      <p className="font-body text-xs text-slate-500 uppercase tracking-wider">Total Qty</p>
+                      <p className="font-heading text-xl font-bold text-brand-red">{stat.quantity}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Controls */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
-          <div className="flex-1">
+          <div className="flex-1 flex flex-col sm:flex-row gap-3">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input
+                type="text"
+                placeholder="Search by name, order ID, or phone..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2.5 text-brand-black font-body placeholder:text-slate-400 focus:outline-none focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 transition-all"
+              />
+            </div>
+            
+            {/* Status Filter */}
             <select
               id="payment-status-filter"
               aria-label="Filter orders by payment status"
@@ -171,7 +232,7 @@ export default function AdminPage() {
               onChange={(e) => setFilter(e.target.value as PaymentStatus | 'ALL')}
               className="w-full sm:w-auto bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-brand-black font-body focus:outline-none focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 transition-all"
             >
-              <option value="ALL">All Orders</option>
+              <option value="ALL">All Status</option>
               <option value="PAID">Paid</option>
               <option value="PENDING_PAYMENT">Pending Payment</option>
               <option value="CANCELLED">Cancelled</option>
