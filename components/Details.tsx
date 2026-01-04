@@ -7,17 +7,17 @@ export default function Details() {
     {
       icon: <Shirt size={28} strokeWidth={1.5} />,
       title: 'Premium Fabric',
-      description: '100% combed cotton. Pre-shrunk. Breathable and built to last through your toughest sessions.',
+      description: '100% premium combed cotton. Pre-shrunk for lasting fit. Breathable and built to last through your toughest sessions.',
     },
     {
       icon: <Package size={28} strokeWidth={1.5} />,
-      title: 'Perfect Fit',
-      description: 'Athletic cut with reinforced stitching. Designed for comfort during training and casual wear.',
+      title: 'Signature Design',
+      description: 'Chest logo branding with bold BEAT MODE back graphic. "THINK GOOD" hem label detail. Designed for the dedicated.',
     },
     {
       icon: <Award size={28} strokeWidth={1.5} />,
       title: 'Limited Edition',
-      description: 'Exclusive drop. Once they\'re gone, they\'re gone. Be part of the Lifting Social movement.',
+      description: 'Exclusive first drop. Once they\'re gone, they\'re gone. Be part of the Lifting Social movement from the beginning.',
     },
   ];
 
@@ -51,26 +51,55 @@ export default function Details() {
         </div>
 
         {/* Size Chart */}
-        <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-lg">
-          <div className="bg-gradient-to-r from-brand-red to-brand-red-dark p-6 sm:p-8">
-            <div className="flex items-center gap-3 text-white">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <Ruler className="w-5 h-5 sm:w-6 sm:h-6" />
+        <div className="bg-white rounded-xl sm:rounded-2xl md:rounded-3xl border border-slate-200 overflow-hidden shadow-lg">
+          <div className="bg-gradient-to-r from-brand-black to-slate-800 p-4 sm:p-6 md:p-8">
+            <div className="flex items-center gap-2 sm:gap-3 text-white">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-brand-red rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <Ruler className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
               </div>
               <div>
-                <h3 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold">Size Guide</h3>
-                <p className="font-body text-xs sm:text-sm text-white/90 mt-1">Find your perfect fit</p>
+                <h3 className="font-heading text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">Size Guide</h3>
+                <p className="font-body text-[10px] sm:text-xs md:text-sm text-white/90 mt-0.5 sm:mt-1">Find your perfect fit</p>
               </div>
             </div>
           </div>
           
-          <div className="overflow-x-auto -mx-4 sm:mx-0">
-            <table className="w-full min-w-[320px]">
+          {/* Mobile: Card Layout */}
+          <div className="block sm:hidden divide-y divide-slate-100">
+            {[
+              { size: 'S', chest: '36-38', length: '27-28' },
+              { size: 'M', chest: '38-40', length: '28-29' },
+              { size: 'L', chest: '40-42', length: '29-30' },
+              { size: 'XL', chest: '42-44', length: '30-31' },
+              { size: 'XXL', chest: '44-46', length: '31-32' },
+            ].map((row) => (
+              <div key={row.size} className="p-4 hover:bg-slate-50 transition-colors active:bg-slate-100 touch-manipulation">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-heading text-2xl font-bold text-brand-red">{row.size}</span>
+                  <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Size</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-slate-50 rounded-lg p-3">
+                    <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-1">Chest</div>
+                    <div className="font-body text-base font-semibold text-slate-900">{row.chest}"</div>
+                  </div>
+                  <div className="bg-slate-50 rounded-lg p-3">
+                    <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-1">Length</div>
+                    <div className="font-body text-base font-semibold text-slate-900">{row.length}"</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: Table Layout */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50">
-                  <th className="py-3 sm:py-4 px-4 sm:px-6 text-left font-body text-xs sm:text-sm font-semibold text-slate-900">SIZE</th>
-                  <th className="py-3 sm:py-4 px-4 sm:px-6 text-left font-body text-xs sm:text-sm font-semibold text-slate-900">CHEST (in)</th>
-                  <th className="py-3 sm:py-4 px-4 sm:px-6 text-left font-body text-xs sm:text-sm font-semibold text-slate-900">LENGTH (in)</th>
+                <tr className="border-b-2 border-slate-200 bg-slate-50">
+                  <th className="py-3 md:py-4 px-4 md:px-6 lg:px-8 text-left font-body text-xs md:text-sm font-bold text-slate-900 uppercase tracking-wider">Size</th>
+                  <th className="py-3 md:py-4 px-4 md:px-6 lg:px-8 text-left font-body text-xs md:text-sm font-bold text-slate-900 uppercase tracking-wider">Chest (in)</th>
+                  <th className="py-3 md:py-4 px-4 md:px-6 lg:px-8 text-left font-body text-xs md:text-sm font-bold text-slate-900 uppercase tracking-wider">Length (in)</th>
                 </tr>
               </thead>
               <tbody className="font-body">
@@ -82,18 +111,18 @@ export default function Details() {
                   { size: 'XXL', chest: '44-46', length: '31-32' },
                 ].map((row, index) => (
                   <tr key={row.size} className={`border-b border-slate-100 hover:bg-slate-50 transition-colors ${index === 4 ? 'border-b-0' : ''}`}>
-                    <td className="py-3 sm:py-4 px-4 sm:px-6 font-bold text-brand-red text-sm sm:text-base">{row.size}</td>
-                    <td className="py-3 sm:py-4 px-4 sm:px-6 text-slate-600 text-sm sm:text-base">{row.chest}</td>
-                    <td className="py-3 sm:py-4 px-4 sm:px-6 text-slate-600 text-sm sm:text-base">{row.length}</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 lg:px-8 font-heading text-lg md:text-xl font-bold text-brand-red">{row.size}</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 lg:px-8 text-slate-700 text-sm md:text-base font-medium">{row.chest}</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 lg:px-8 text-slate-700 text-sm md:text-base font-medium">{row.length}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           
-          <div className="p-6 bg-slate-50 border-t border-slate-200">
-            <p className="font-body text-sm text-slate-600 text-center">
-              <span className="font-medium text-slate-900">Pro Tip:</span> If you&apos;re between sizes, we recommend sizing up for a relaxed fit.
+          <div className="p-4 sm:p-5 md:p-6 bg-slate-50 border-t border-slate-200">
+            <p className="font-body text-xs sm:text-sm text-slate-600 text-center leading-relaxed">
+              <span className="font-semibold text-slate-900">Pro Tip:</span> If you&apos;re between sizes, we recommend sizing up for a relaxed fit.
             </p>
           </div>
         </div>

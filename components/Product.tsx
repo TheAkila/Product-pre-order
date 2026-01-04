@@ -1,6 +1,7 @@
 'use client';
 
 import { Calendar, Tag } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Product() {
   return (
@@ -19,54 +20,37 @@ export default function Product() {
         {/* Product Grid */}
         <div className="grid gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-10 md:mb-12">
           {/* Front View Card */}
-          <div className="group bg-slate-50 rounded-3xl overflow-hidden card-hover">
-            <div className="aspect-[4/5] bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-slate-400 mb-2">
-                    <svg className="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <p className="font-body text-sm text-slate-500">Front View Mockup</p>
-                </div>
-              </div>
-              {/* Replace with actual image */}
-              {/* <Image 
-                src="/images/tshirt-front.jpg" 
-                alt="T-shirt front view"
+          <div className="group bg-slate-50 rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden card-hover">
+            <div className="aspect-[4/5] bg-slate-100 relative overflow-hidden">
+              <Image 
+                src="/images/Front.png" 
+                alt="Lifting Social T-shirt Front View - Black tee with chest logo"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
-              /> */}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                priority
+              />
             </div>
-            <div className="p-6">
-              <p className="font-body text-sm font-medium text-slate-600 text-center">FRONT VIEW</p>
+            <div className="p-4 sm:p-5 md:p-6 bg-white">
+              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Front View</p>
+              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">LIFTING SOCIAL chest logo</p>
             </div>
           </div>
 
           {/* Back View Card */}
-          <div className="group bg-slate-50 rounded-3xl overflow-hidden card-hover">
-            <div className="aspect-[4/5] bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-slate-400 mb-2">
-                    <svg className="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <p className="font-body text-sm text-slate-500">Back View Mockup</p>
-                </div>
-              </div>
-              {/* Replace with actual image */}
-              {/* <Image 
-                src="/images/tshirt-back.jpg" 
-                alt="T-shirt back view"
+          <div className="group bg-slate-50 rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden card-hover">
+            <div className="aspect-[4/5] bg-slate-100 relative overflow-hidden">
+              <Image 
+                src="/images/Back.png" 
+                alt="Lifting Social T-shirt Back View - BEAT MODE graphic"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
-              /> */}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+              />
             </div>
-            <div className="p-6">
-              <p className="font-body text-sm font-medium text-slate-600 text-center">BACK VIEW</p>
+            <div className="p-4 sm:p-5 md:p-6 bg-white">
+              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Back View</p>
+              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">BEAT MODE back graphic</p>
             </div>
           </div>
         </div>
