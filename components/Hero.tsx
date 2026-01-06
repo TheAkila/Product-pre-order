@@ -2,20 +2,19 @@
 
 import { ChevronDown } from 'lucide-react';
 import Logo from './Logo';
-// import PromotionalSection from './PromotionalSection';
+
 
 export default function Hero() {
   const scrollToForm = () =>
     document.getElementById('order-form')?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <section className="relative w-full min-h-[100dvh] flex flex-col justify-center items-center bg-brand-white text-brand-black overflow-hidden pt-2 pb-6 sm:py-0">
+    <section className="relative w-full min-h-[100dvh] flex flex-col items-center bg-brand-white text-brand-black overflow-hidden pt-4 pb-12 sm:justify-center sm:pt-0">
 
-      {/* Promotional Section
-      <PromotionalSection /> */}
+      
 
       {/* Logo */}
-      <div className="mb-4 sm:mb-8">
+      <div className="mb-2 sm:mb-6 mt-2">
         <Logo size="lg" className="opacity-90 scale-75 sm:scale-100 origin-bottom" />
       </div>
 
