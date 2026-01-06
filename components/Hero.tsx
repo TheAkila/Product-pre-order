@@ -8,7 +8,7 @@ export default function Hero() {
     document.getElementById('order-form')?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <section className="relative w-full min-h-[100dvh] flex flex-col justify-center items-center bg-brand-white text-brand-black overflow-hidden py-24 sm:py-0">
+    <section className="relative w-full min-h-[100dvh] flex flex-col justify-center items-center bg-brand-white text-brand-black overflow-hidden pt-16 pb-24 sm:py-0">
       
       {/* Logo */}
       <div className="mb-6 sm:mb-8">
