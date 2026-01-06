@@ -111,7 +111,7 @@ export default function Details() {
                   { size: 'XXL', chest: '44-46', length: '31-32' },
                 ].map((row, index) => (
                   <tr key={row.size} className={`border-b border-slate-100 hover:bg-slate-50 transition-colors ${index === 4 ? 'border-b-0' : ''}`}>
-                    <td className="py-3 md:py-4 px-4 md:px-6 lg:px-8 font-heading text-lg md:text-xl font-bold text-brand-red">{row.size}</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 lg:px-8 font-heading text-lg md:text-xl font-bold text-brand-black">{row.size}</td>
                     <td className="py-3 md:py-4 px-4 md:px-6 lg:px-8 text-slate-700 text-sm md:text-base font-medium">{row.chest}</td>
                     <td className="py-3 md:py-4 px-4 md:px-6 lg:px-8 text-slate-700 text-sm md:text-base font-medium">{row.length}</td>
                   </tr>

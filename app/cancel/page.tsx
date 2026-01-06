@@ -7,8 +7,8 @@ export default function CancelPage() {
       <div className="max-w-3xl mx-auto w-full">
         {/* Cancel Icon */}
         <div className="flex justify-center mb-6 sm:mb-8">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-red-100 rounded-full flex items-center justify-center">
-            <XCircle size={40} className="sm:w-12 sm:h-12 text-red-600" strokeWidth={2.5} />
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-100 rounded-full flex items-center justify-center">
+            <XCircle size={40} className="sm:w-12 sm:h-12 text-slate-900" strokeWidth={2.5} />
           </div>
         </div>
 
@@ -41,19 +41,19 @@ export default function CancelPage() {
           <h2 className="font-heading text-xl sm:text-2xl font-bold text-brand-black mb-4 sm:mb-6 text-center">Common Reasons</h2>
           <ul className="space-y-3 sm:space-y-4 font-body text-sm sm:text-base text-slate-600">
             <li className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-brand-red rounded-full"></div>
+              <div className="w-2 h-2 bg-brand-black rounded-full"></div>
               <span>Payment was cancelled by you</span>
             </li>
             <li className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-brand-red rounded-full"></div>
+              <div className="w-2 h-2 bg-brand-black rounded-full"></div>
               <span>Payment gateway timeout or connection issue</span>
             </li>
             <li className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-brand-red rounded-full"></div>
+              <div className="w-2 h-2 bg-brand-black rounded-full"></div>
               <span>Technical issues with payment provider</span>
             </li>
             <li className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-brand-red rounded-full"></div>
+              <div className="w-2 h-2 bg-brand-black rounded-full"></div>
               <span>Insufficient funds or declined card</span>
             </li>
           </ul>

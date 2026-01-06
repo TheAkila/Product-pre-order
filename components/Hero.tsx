@@ -9,29 +9,29 @@ export default function Hero() {
 
   return (
     <section className="relative w-full min-h-[100dvh] flex flex-col justify-center items-center bg-brand-white text-brand-black overflow-hidden pt-16 pb-24 sm:py-0">
-      
+
       {/* Logo */}
-      <div className="mb-6 sm:mb-8">
-        <Logo size="lg" className="opacity-90 scale-90 sm:scale-100" />
+      <div className="mb-4 sm:mb-8">
+        <Logo size="lg" className="opacity-90 scale-75 sm:scale-100 origin-bottom" />
       </div>
 
       {/* Headline */}
-      <h1 className="text-4xl sm:text-6xl md:text-7xl font-heading font-medium tracking-tight leading-tight text-center max-w-4xl px-4 text-balance">
+      <h1 className="text-3xl sm:text-6xl md:text-7xl font-heading font-medium tracking-tight leading-tight text-center max-w-4xl px-4 text-balance">
         Designed for Strength.
         <br className="hidden md:block" />
         Engineered for Performance.
       </h1>
 
       {/* Subtext */}
-      <p className="mt-6 text-sm sm:text-lg md:text-xl font-body text-gray-700 text-center max-w-xl px-6 text-pretty leading-relaxed">
+      <p className="mt-4 sm:mt-6 text-sm sm:text-lg md:text-xl font-body text-gray-700 text-center max-w-xl px-6 text-pretty leading-relaxed">
         Premium athletic wear for the modern lifter — refined materials, elevated cut, effortless performance.
       </p>
 
       {/* Buttons */}
-      <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center w-full px-4 sm:px-0">
+      <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center w-full px-6 sm:px-0">
         <button
           onClick={scrollToForm}
-          className="w-full sm:w-auto px-10 py-4 text-xl font-heading font-bold text-white bg-brand-black hover:bg-slate-800 transition-all rounded-lg shadow-lg hover:shadow-xl"
+          className="w-full sm:w-auto px-8 py-3 sm:px-10 sm:py-4 text-lg sm:text-xl font-heading font-bold text-white bg-brand-black hover:bg-slate-800 transition-all rounded-lg shadow-lg hover:shadow-xl"
         >
           Reserve Your Tee
         </button>
@@ -40,33 +40,35 @@ export default function Hero() {
           onClick={() =>
             document.getElementById('product')?.scrollIntoView({ behavior: 'smooth' })
           }
-          className="w-full sm:w-auto px-10 py-4 text-xl font-heading font-bold text-brand-black bg-transparent border-2 border-brand-black hover:bg-neutral-50 transition-all rounded-lg"
+          className="w-full sm:w-auto px-8 py-3 sm:px-10 sm:py-4 text-lg sm:text-xl font-heading font-bold text-brand-black bg-transparent border-2 border-brand-black hover:bg-neutral-50 transition-all rounded-lg"
         >
           View Collection
         </button>
       </div>
 
       {/* Stats */}
-      <div className="mt-14 sm:mt-20 flex flex-wrap justify-center gap-x-12 gap-y-8 max-w-2xl text-center px-4">
-        <div className="min-w-[100px]">
-          <div className="text-2xl sm:text-3xl font-heading font-bold text-brand-black">100%</div>
-          <div className="text-sm font-body font-medium text-gray-600 tracking-wider">
+      <div className="mt-10 sm:mt-20 flex flex-wrap justify-center gap-x-8 sm:gap-x-12 gap-y-6 sm:gap-y-8 max-w-2xl text-center px-4">
+        <div className="min-w-[80px] sm:min-w-[100px]">
+          <div className="text-xl sm:text-3xl font-heading font-bold text-brand-black">100%</div>
+          <div className="text-xs sm:text-sm font-body font-medium text-gray-600 tracking-wider">
             Organic Cotton
           </div>
         </div>
-        <div className="min-w-[100px]">
-          <div className="text-2xl sm:text-3xl font-heading font-bold text-brand-black">
+
+        <div className="min-w-[80px] sm:min-w-[100px]">
+          <div className="text-xl sm:text-3xl font-heading font-bold text-brand-black">
             Limited
           </div>
-          <div className="text-sm font-body font-medium text-gray-600 tracking-wider">
+          <div className="text-xs sm:text-sm font-body font-medium text-gray-600 tracking-wider">
             Edition
           </div>
         </div>
-        <div className="min-w-[100px]">
-          <div className="text-2xl sm:text-3xl font-heading font-bold text-brand-black">
+
+        <div className="min-w-[80px] sm:min-w-[100px]">
+          <div className="text-xl sm:text-3xl font-heading font-bold text-brand-black">
             Worldwide
           </div>
-          <div className="text-sm font-body font-medium text-gray-600 tracking-wider">
+          <div className="text-xs sm:text-sm font-body font-medium text-gray-600 tracking-wider">
             Premium
           </div>
         </div>

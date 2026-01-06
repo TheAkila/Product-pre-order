@@ -42,8 +42,8 @@ export default function SuccessPage() {
           <h2 className="font-heading text-xl sm:text-2xl font-bold text-brand-black mb-4 sm:mb-6 text-center">What’s Next?</h2>
           <div className="space-y-5 sm:space-y-6">
             <div className="flex gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-red/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-brand-red" strokeWidth={2} />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-black/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-brand-black" strokeWidth={2} />
               </div>
               <div>
                 <h3 className="font-body font-semibold text-brand-black mb-1 text-sm sm:text-base">Check your phone</h3>

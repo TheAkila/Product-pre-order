@@ -55,9 +55,9 @@ body {
   }
   
   .btn-accent {
-    @apply bg-brand-red text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-medium 
-           transition-all duration-300 hover:bg-brand-red-dark active:scale-95
-           shadow-brand hover:shadow-brand-lg;
+    @apply bg-brand-black text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-medium 
+           transition-all duration-300 hover:bg-slate-800 active:scale-95
+           shadow-lg hover:shadow-xl;
   }
   
   .input-seamless {

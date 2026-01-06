@@ -66,7 +66,7 @@ export default function OrderForm() {
       <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-brand-black rounded-2xl mb-3 sm:mb-4 md:mb-6 shadow-brand">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-brand-black rounded-2xl mb-3 sm:mb-4 md:mb-6 shadow-xl">
             <ShoppingBag className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" strokeWidth={1.5} />
           </div>
           <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-brand-black mb-2 sm:mb-3 md:mb-4 px-2">

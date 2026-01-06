@@ -1,5 +1,5 @@
 import { Mail, Instagram } from 'lucide-react';
-import Logo from './Logo';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -9,7 +9,15 @@ export default function Footer() {
           {/* Brand */}
           <div className="text-center sm:text-left">
             <div className="mb-3 sm:mb-4 flex justify-center sm:justify-start">
-              <Logo size="sm" />
+              <div className="w-28 h-auto">
+                <Image 
+                  src="/images/lifting-social-logo-2.svg" 
+                  alt="Lifting Social" 
+                  width={680} 
+                  height={360}
+                  className="w-full h-auto"
+                />
+              </div>
             </div>
             <h3 className="font-heading text-xl sm:text-2xl font-bold mb-1 sm:mb-2">LIFTING SOCIAL</h3>
             <p className="font-body text-xs sm:text-sm text-slate-400">Built for Those Who Lift</p>
@@ -21,16 +29,16 @@ export default function Footer() {
             <div className="space-y-2.5 sm:space-y-3">
               <a 
                 href="mailto:support@liftingsocial.com" 
-                className="flex items-center justify-center sm:justify-start gap-2 font-body text-xs sm:text-sm text-slate-400 hover:text-brand-red transition-colors min-h-[44px] sm:min-h-0 touch-manipulation"
+                className="flex items-center justify-center sm:justify-start gap-2 font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 touch-manipulation"
               >
                 <Mail size={16} strokeWidth={2} />
-                <span className="break-all">support@liftingsocial.com</span>
+                <span className="break-all">liftingsocial@gmail.com</span>
               </a>
               <a 
                 href="https://instagram.com/liftingsocial" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center sm:justify-start gap-2 font-body text-xs sm:text-sm text-slate-400 hover:text-brand-red transition-colors min-h-[44px] sm:min-h-0 touch-manipulation"
+                className="flex items-center justify-center sm:justify-start gap-2 font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 touch-manipulation"
               >
                 <Instagram size={16} strokeWidth={2} />
                 @liftingsocial
@@ -42,13 +50,13 @@ export default function Footer() {
           <div className="text-center sm:text-left">
             <h4 className="font-body text-xs sm:text-sm font-semibold text-slate-300 mb-3 sm:mb-4">QUICK LINKS</h4>
             <div className="space-y-2">
-              <a href="#product" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-brand-red transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
+              <a href="#product" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
                 View Collection
               </a>
-              <a href="#details" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-brand-red transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
+              <a href="#details" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
                 Size Guide
               </a>
-              <a href="#order-form" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-brand-red transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
+              <a href="#order-form" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
                 Pre-Order Now
               </a>
             </div>
@@ -61,10 +69,10 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Lifting Social. All rights reserved.
           </p>
           <div className="flex gap-4 sm:gap-6">
-            <a href="#" className="font-body text-[10px] sm:text-xs text-slate-500 hover:text-brand-red transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">
+            <a href="#" className="font-body text-[10px] sm:text-xs text-slate-500 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">
               Privacy Policy
             </a>
-            <a href="#" className="font-body text-[10px] sm:text-xs text-slate-500 hover:text-brand-red transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">
+            <a href="#" className="font-body text-[10px] sm:text-xs text-slate-500 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">
               Terms of Service
             </a>
           </div>
