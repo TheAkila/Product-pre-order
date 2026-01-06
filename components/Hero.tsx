@@ -27,7 +27,7 @@ export default function Hero() {
 
       {/* Subtext */}
       <p className="mt-4 sm:mt-6 text-sm sm:text-lg md:text-xl font-body text-gray-700 text-center max-w-xl px-6 text-pretty leading-relaxed">
-        Premium athletic wear for the modern lifter — refined materials, elevated cut, effortless performance.
+        Premium athletic wear for the modern lifter  refined materials, elevated cut, effortless performance.
       </p>
 
       {/* Buttons */}
