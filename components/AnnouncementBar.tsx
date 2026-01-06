@@ -8,7 +8,7 @@ export default function AnnouncementBar() {
         <div className="flex shrink-0 gap-8 sm:gap-16 mx-4 sm:mx-8">
           {[...Array(8)].map((_, i) => (
             <span key={`1-${i}`} className="font-heading font-bold text-sm sm:text-base tracking-widest uppercase flex items-center gap-4 sm:gap-8">
-              {i % 2 === 0 ? "LIFTING SOCIAL" : "BEAST MODE MERGE"}
+              {i % 2 === 0 ? "LIFTING SOCIAL" : "BEAST MODE MERCH"}
             </span>
           ))}
         </div>
@@ -17,7 +17,7 @@ export default function AnnouncementBar() {
         <div className="flex shrink-0 gap-8 sm:gap-16 mx-4 sm:mx-8">
           {[...Array(8)].map((_, i) => (
             <span key={`2-${i}`} className="font-heading font-bold text-sm sm:text-base tracking-widest uppercase flex items-center gap-4 sm:gap-8">
-              {i % 2 === 0 ? "LIFTING SOCIAL" : "BEAST MODE MERGE"}
+              {i % 2 === 0 ? "LIFTING SOCIAL" : "BEAST MODE MERCH"}
             </span>
           ))}
         </div>
