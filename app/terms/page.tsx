@@ -151,50 +151,7 @@ export default function TermsPage() {
               </div>
             </section>
 
-            {/* Shipping and Delivery */}
-            <section className="mb-12">
-              <h2 className="font-heading text-2xl font-bold text-brand-black mb-4 flex items-center gap-3">
-                <Truck className="w-6 h-6 text-brand-red" />
-                Shipping & Delivery
-              </h2>
-              
-              <div className="space-y-6">
-                <div className="bg-slate-50 rounded-xl p-6">
-                  <h3 className="font-heading text-lg font-semibold text-brand-black mb-3">Delivery Areas</h3>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="font-heading text-sm font-semibold text-brand-black mb-2">Sri Lanka (Domestic)</h4>
-                      <ul className="font-body text-xs text-slate-700 space-y-1">
-                        <li>• Free delivery for orders over LKR 5,000</li>
-                        <li>• Standard delivery: 3-7 business days</li>
-                        <li>• Express delivery available in Colombo area</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="font-heading text-sm font-semibold text-brand-black mb-2">International</h4>
-                      <ul className="font-body text-xs text-slate-700 space-y-1">
-                        <li>• International shipping available on request</li>
-                        <li>• Additional shipping charges apply</li>
-                        <li>• Customs duties may apply</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-slate-50 rounded-xl p-6">
-                  <h3 className="font-heading text-lg font-semibold text-brand-black mb-3">Delivery Responsibility</h3>
-                  <p className="font-body text-slate-700 text-sm mb-3">
-                    You are responsible for providing accurate delivery information:
-                  </p>
-                  <ul className="font-body text-slate-700 space-y-1 list-disc list-inside text-sm">
-                    <li>Correct shipping address and contact information</li>
-                    <li>Being available to receive delivery or arrange collection</li>
-                    <li>Additional delivery charges for failed delivery attempts</li>
-                    <li>Risk of loss transfers upon delivery or attempted delivery</li>
-                  </ul>
-                </div>
-              </div>
-            </section>
+            
 
             {/* Cancellation and Refunds */}
             <section className="mb-12">
