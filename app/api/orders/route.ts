@@ -12,12 +12,20 @@ export async function GET() {
     if (!db) {
       console.error('Firebase db is not initialized');
       return NextResponse.json(
-        { error: 'Database connection failed' },
+        { error: 'Database connection failed - Firebase not configured' },
         { status: 500 }
       );
     }
 
     console.log('Firebase db initialized, fetching orders...');
+    if (!db) {
+      console.error('Firebase db became null after initialization check');
+      return NextResponse.json(
+        { error: 'Database connection lost' },
+        { status: 500 }
+      );
+    }
+    
     const ordersRef = collection(db, 'orders');
     const q = query(ordersRef, orderBy('createdAt', 'desc'));
     
@@ -88,6 +96,14 @@ export async function POST(request: NextRequest) {
     const amount = productPrice * body.quantity;
 
     // Create order in Firebase
+    if (!db) {
+      console.error('Firebase db is not initialized for POST');
+      return NextResponse.json(
+        { error: 'Database connection failed' },
+        { status: 500 }
+      );
+    }
+    
     const ordersRef = collection(db, 'orders');
     const orderData = {
       name: body.name.trim(),

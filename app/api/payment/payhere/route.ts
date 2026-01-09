@@ -20,6 +20,14 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch order from Firebase
+    if (!db) {
+      console.error('Firebase db is not initialized for payment processing');
+      return NextResponse.json(
+        { error: 'Database connection failed' },
+        { status: 500 }
+      );
+    }
+    
     const orderRef = doc(db, 'orders', orderId);
     const orderSnap = await getDoc(orderRef);
 

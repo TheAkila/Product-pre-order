@@ -80,6 +80,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Update order in Firebase
+    if (!db) {
+      console.error('Firebase db is not initialized for payment update');
+      return NextResponse.json({ error: 'Database connection failed' }, { status: 500 });
+    }
+    
     const orderRef = doc(db, 'orders', orderId);
     await updateDoc(orderRef, {
       paymentStatus,

@@ -11,13 +11,23 @@ export async function GET() {
     if (!db) {
       return NextResponse.json({
         success: false,
-        error: 'Firebase db is null or undefined',
-        timestamp: new Date().toISOString()
+        error: 'Firebase db is null or undefined - Firebase not configured',
+        timestamp: new Date().toISOString(),
+        buildTime: process.env.NEXT_PHASE === 'phase-production-build'
       }, { status: 500 });
     }
 
     // Second test - try to get collection reference
     console.log('Getting orders collection reference...');
+    if (!db) {
+      console.error('Firebase db became null before collection reference');
+      return NextResponse.json({
+        success: false,
+        error: 'Firebase db became null',
+        timestamp: new Date().toISOString()
+      }, { status: 500 });
+    }
+    
     const ordersRef = collection(db, 'orders');
     console.log('Orders collection reference created successfully');
 

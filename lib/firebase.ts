@@ -15,8 +15,12 @@ console.log('Firebase config check:', {
   hasAuthDomain: !!firebaseConfig.authDomain,
   hasProjectId: !!firebaseConfig.projectId,
   projectId: firebaseConfig.projectId,
-  environment: process.env.NODE_ENV
+  environment: process.env.NODE_ENV,
+  buildTime: process.env.NEXT_PHASE === 'phase-production-build'
 });
+
+// During build time, allow missing environment variables
+const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' || process.env.NODE_ENV === 'production' && !process.env.VERCEL_URL;
 
 // Validate required Firebase environment variables
 const requiredEnvVars = [
@@ -30,28 +34,43 @@ const requiredEnvVars = [
 
 const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
 if (missingVars.length > 0) {
-  console.error('Missing Firebase environment variables:', missingVars);
-  throw new Error(`Missing required Firebase environment variables: ${missingVars.join(', ')}`);
+  const errorMsg = `Missing required Firebase environment variables: ${missingVars.join(', ')}`;
+  console.error(errorMsg);
+  
+  // Only throw during runtime, not during build
+  if (!isBuildTime) {
+    throw new Error(errorMsg);
+  } else {
+    console.warn('Build time: Firebase environment variables missing, using dummy config');
+  }
 }
 
 // Initialize Firebase
-let app: FirebaseApp;
-let db: Firestore;
+let app: FirebaseApp | null = null;
+let db: Firestore | null = null;
 
 try {
-  if (!getApps().length) {
-    console.log('Initializing Firebase app...');
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    console.log('Firebase initialized successfully');
+  // During build time with missing env vars, create a dummy app
+  if (isBuildTime && missingVars.length > 0) {
+    console.log('Build time: Skipping Firebase initialization due to missing env vars');
+    // Export null values for build time
   } else {
-    console.log('Using existing Firebase app...');
-    app = getApps()[0];
-    db = getFirestore(app);
+    if (!getApps().length) {
+      console.log('Initializing Firebase app...');
+      app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      console.log('Firebase initialized successfully');
+    } else {
+      console.log('Using existing Firebase app...');
+      app = getApps()[0];
+      db = getFirestore(app);
+    }
   }
 } catch (error) {
   console.error('Firebase initialization error:', error);
-  throw error;
+  if (!isBuildTime) {
+    throw error;
+  }
 }
 
 export { app, db };
