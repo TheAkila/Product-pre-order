@@ -33,7 +33,7 @@ export default function Product() {
             </div>
             <div className="p-4 sm:p-5 md:p-6 bg-white">
               <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Front View</p>
-              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">LIFTING SOCIAL chest logo</p>
+              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">LIFTING SOCIAL on chest</p>
             </div>
           </div>
 
@@ -42,7 +42,7 @@ export default function Product() {
             <div className="aspect-[4/5] bg-slate-100 relative overflow-hidden">
               <Image 
                 src="/images/Back.png" 
-                alt="Lifting Social T-shirt Back View - BEAT MODE graphic"
+                alt="Lifting Social T-shirt Back View - BEAST MODE DESIGN"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
@@ -50,7 +50,7 @@ export default function Product() {
             </div>
             <div className="p-4 sm:p-5 md:p-6 bg-white">
               <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Back View</p>
-              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">BEAT MODE back graphic</p>
+              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">BEAST MODE Design</p>
             </div>
           </div>
         </div>
