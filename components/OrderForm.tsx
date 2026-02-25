@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { OrderFormData } from '@/types/order';
-import { Loader2, ShoppingBag, User, Phone, Ruler, Hash } from 'lucide-react';
+import { Loader2, ShoppingBag, User, Phone, Ruler, Hash, Plus, Minus } from 'lucide-react';
 
 export default function OrderForm() {
   const [formData, setFormData] = useState<OrderFormData>({
@@ -131,21 +131,46 @@ export default function OrderForm() {
 
             {/* Quantity */}
             <div>
-              <label htmlFor="quantity" className="flex items-center gap-2 font-body text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="quantity" className="flex items-center gap-2 font-body text-sm font-medium text-slate-700 mb-3">
                 <Hash size={16} strokeWidth={2} />
                 Quantity
               </label>
-              <input
-                type="number"
-                id="quantity"
-                min="1"
-                max="10"
-                value={formData.quantity}
-                onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) || 1 })}
-                className="input-seamless w-full"
-                required
-                disabled={isSubmitting}
-              />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, quantity: Math.max(1, formData.quantity - 1) })}
+                  disabled={isSubmitting || formData.quantity <= 1}
+                  className="h-12 sm:h-11 w-12 sm:w-11 rounded-lg border-2 border-slate-300 bg-white hover:bg-slate-50 active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus size={20} strokeWidth={2.5} className="text-slate-700" />
+                </button>
+
+                <input
+                  type="number"
+                  id="quantity"
+                  min="1"
+                  max="10"
+                  value={formData.quantity}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value) || 1;
+                    setFormData({ ...formData, quantity: Math.max(1, Math.min(10, val)) });
+                  }}
+                  className="input-seamless flex-1 text-center text-lg sm:text-base font-semibold"
+                  required
+                  disabled={isSubmitting}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, quantity: Math.min(10, formData.quantity + 1) })}
+                  disabled={isSubmitting || formData.quantity >= 10}
+                  className="h-12 sm:h-11 w-12 sm:w-11 rounded-lg border-2 border-slate-300 bg-white hover:bg-slate-50 active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                  aria-label="Increase quantity"
+                >
+                  <Plus size={20} strokeWidth={2.5} className="text-slate-700" />
+                </button>
+              </div>
             </div>
 
             {/* Total Amount */}
