@@ -21,7 +21,7 @@ export default function Footer() {
               </div>
             </div>
             <h3 className="font-heading text-xl sm:text-2xl font-bold mb-1 sm:mb-2">LIFTING SOCIAL</h3>
-            <p className="font-body text-xs sm:text-sm text-slate-400">Built for Those Who Lift</p>
+            <p className="font-body text-xs sm:text-sm text-slate-400">Built for Champions</p>
           </div>
 
           {/* Contact */}

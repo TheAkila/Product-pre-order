@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { doc, updateDoc, Timestamp, getDoc } from 'firebase/firestore';
 import { db, getFirebaseStatus } from '@/lib/firebase';
 import crypto from 'crypto';
-import { sendOrderConfirmationSMS } from '@/lib/sms';
+import { sendOrderConfirmationSMS, sendAdminOrderNotificationSMS } from '@/lib/sms';
 
 /**
  * PayHere IPN (Instant Payment Notification) Handler
@@ -111,15 +111,27 @@ export async function POST(request: NextRequest) {
           const orderData = orderDoc.data();
           const phone = orderData.phone;
           const customerName = orderData.name?.split(' ')[0] || 'Customer';
+          const amount = orderData.amount;
 
-          // Send SMS notification
+          // Send SMS notification to customer
           const smsResult = await sendOrderConfirmationSMS(phone, orderId, customerName);
           
           if (smsResult.success) {
-            console.log(`SMS confirmation sent to ${phone}`);
+            console.log(`✓ Payment confirmation SMS sent to customer ${phone}`);
           } else {
-            console.warn(`SMS sending failed: ${smsResult.message}`);
-            // Don't fail the IPN if SMS fails - order is still confirmed
+            console.warn(`SMS to customer failed: ${smsResult.message}`);
+          }
+
+          // Send admin notification SMS about successful payment
+          try {
+            const adminSmsResult = await sendAdminOrderNotificationSMS(orderId, customerName, phone, amount);
+            if (adminSmsResult.success) {
+              console.log(`✓ Payment notification SMS sent to admin`);
+            } else {
+              console.warn(`Admin SMS failed: ${adminSmsResult.message}`);
+            }
+          } catch (adminSmsError) {
+            console.error('Error sending admin SMS:', adminSmsError);
           }
         }
       } catch (smsError) {

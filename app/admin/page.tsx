@@ -33,6 +33,11 @@ export default function AdminPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [updatingStatusOrderId, setUpdatingStatusOrderId] = useState<string | null>(null);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<'PROCESSING' | 'SHIPPED' | 'DELIVERED'>('PROCESSING');
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [statusUpdateError, setStatusUpdateError] = useState<string | null>(null);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,6 +131,60 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
       console.log('Fetch orders completed');
+    }
+  };
+
+  const updateDeliveryStatus = async (orderId: string, status: 'PROCESSING' | 'SHIPPED' | 'DELIVERED') => {
+    setStatusUpdateError(null);
+    setIsUpdatingStatus(true);
+    try {
+      console.log('Updating delivery status:', orderId, status);
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+      
+      const response = await fetch(`/api/orders/${orderId}/delivery`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          deliveryStatus: status,
+          adminPassword: adminPassword,
+        }),
+      });
+
+      console.log('Update response status:', response.status);
+      const responseText = await response.text();
+      console.log('Update response:', responseText);
+
+      let data;
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch (e) {
+        console.error('Failed to parse response:', e);
+        data = { error: 'Invalid response format' };
+      }
+
+      if (!response.ok || data.error) {
+        throw new Error(data.error || data.details || `Failed to update status (${response.status})`);
+      }
+
+      // Update local state
+      setOrders(orders.map(o => 
+        o.orderId === orderId 
+          ? { ...o, deliveryStatus: status, updatedAt: new Date() }
+          : o
+      ));
+
+      setShowStatusModal(false);
+      setUpdatingStatusOrderId(null);
+      setSelectedStatus('PROCESSING');
+      console.log('Delivery status updated successfully');
+    } catch (err) {
+      console.error('Update delivery status error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update delivery status';
+      setStatusUpdateError(errorMessage);
+    } finally {
+      setIsUpdatingStatus(false);
     }
   };
 
@@ -627,6 +686,9 @@ export default function AdminPage() {
                       <th className="py-4 px-6 text-left">
                         <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Delivery</span>
                       </th>
+                      <th className="py-4 px-6 text-center">
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Delivery Status</span>
+                      </th>
                       <th className="py-4 px-6 text-right">
                         <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Date</span>
                       </th>
@@ -711,17 +773,33 @@ export default function AdminPage() {
                           </p>
                         </td>
                         <td className="py-4 px-6 text-center">
-                          <button
-                            onClick={() => {
-                              setDeletingOrderId(order.orderId);
-                              setShowDeleteConfirm(true);
-                              setDeleteError(null);
-                            }}
-                            className="inline-flex items-center justify-center p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all hover:scale-110"
-                            title="Delete order"
-                          >
-                            <Trash2 size={18} strokeWidth={2} />
-                          </button>
+                          <div className="flex items-center justify-center gap-2">
+                            {order.paymentStatus === 'PAID' && (
+                              <button
+                                onClick={() => {
+                                  setUpdatingStatusOrderId(order.orderId);
+                                  setSelectedStatus(order.deliveryStatus || 'PROCESSING' as 'PROCESSING' | 'SHIPPED' | 'DELIVERED');
+                                  setShowStatusModal(true);
+                                  setStatusUpdateError(null);
+                                }}
+                                className="inline-flex items-center justify-center p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all hover:scale-110"
+                                title="Update delivery status"
+                              >
+                                <Package size={18} strokeWidth={2} />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => {
+                                setDeletingOrderId(order.orderId);
+                                setShowDeleteConfirm(true);
+                                setDeleteError(null);
+                              }}
+                              className="inline-flex items-center justify-center p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all hover:scale-110"
+                              title="Delete order"
+                            >
+                              <Trash2 size={18} strokeWidth={2} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

@@ -16,6 +16,7 @@ export interface Order {
   paymentMethod: 'PAYHERE';
   paymentStatus: PaymentStatus;
   deliveryMethod: DeliveryMethod;
+  deliveryStatus?: 'PROCESSING' | 'SHIPPED' | 'DELIVERED';
   deliveryDetails?: DeliveryDetails;
   createdAt: Date;
   updatedAt?: Date;

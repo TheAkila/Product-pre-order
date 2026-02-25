@@ -136,6 +136,8 @@ export async function POST(request: NextRequest) {
 
     const docRef = await addDoc(ordersRef, orderData);
 
+    console.log(`✓ Order created successfully: ${docRef.id}`);
+
     return NextResponse.json({
       orderId: docRef.id,
       ...orderData,
