@@ -75,14 +75,12 @@ export default function OrderForm() {
       <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-brand-black rounded-2xl mb-3 sm:mb-4 md:mb-6 shadow-xl">
-            <ShoppingBag className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" strokeWidth={1.5} />
-          </div>
+          
           <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-brand-black mb-2 sm:mb-3 md:mb-4 px-2">
             Reserve Yours
           </h2>
           <p className="font-body text-sm sm:text-base md:text-lg text-slate-600 max-w-xl mx-auto px-3 sm:px-4 leading-relaxed">
-            Complete the form below to secure your limited-edition tee. Fast, secure, and simple.
+            Complete the form below to secure your elite gym shaker. Fast, secure, and simple.
           </p>
         </div>
 
@@ -131,30 +129,7 @@ export default function OrderForm() {
               />
             </div>
 
-            {/* Size Selection */}
-            <div>
-              <label className="flex items-center gap-2 font-body text-sm font-medium text-slate-700 mb-3">
-                <Ruler size={16} strokeWidth={2} />
-                Select Size
-              </label>
-              <div className="grid grid-cols-5 gap-2 sm:gap-3">
-                {sizes.map((size) => (
-                  <button
-                    key={size}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, size })}
-                    className={`py-3 sm:py-4 rounded-xl font-heading font-bold text-base sm:text-lg transition-all duration-300 min-h-[52px] sm:min-h-[auto] ${
-                      formData.size === size
-                        ? 'bg-brand-black text-white shadow-lg'
-                        : 'bg-white text-slate-700 border-2 border-slate-200 hover:border-brand-black active:border-brand-black'
-                    }`}
-                    disabled={isSubmitting}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
+            
 
             {/* Quantity */}
             <div>

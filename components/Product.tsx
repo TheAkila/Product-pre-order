@@ -10,10 +10,10 @@ export default function Product() {
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-12 md:mb-16">
           <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-brand-black mb-2 sm:mb-3 md:mb-4 px-2">
-            The Drop
+            Elite Gym Shaker
           </h2>
           <p className="font-body text-sm sm:text-base md:text-lg lg:text-xl text-slate-600 max-w-2xl mx-auto px-3 sm:px-4 leading-relaxed">
-            Premium quality athletic wear. Limited quantity. Designed for champions.
+            Premium shaker. Limited release. Built for champions.
           </p>
         </div>
 
