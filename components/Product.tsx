@@ -32,8 +32,8 @@ export default function Product() {
               />
             </div>
             <div className="p-4 sm:p-5 md:p-6 bg-white">
-              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Front View</p>
-              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">LIFTING SOCIAL on chest</p>
+              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">LIFTING SOCIAL on side</p>
+              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">make yours</p>
             </div>
           </div>
 
@@ -49,8 +49,8 @@ export default function Product() {
               />
             </div>
             <div className="p-4 sm:p-5 md:p-6 bg-white">
-              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Back View</p>
-              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">BEAST MODE Design</p>
+              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Elite Design</p>
+              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">Pre order Today</p>
             </div>
           </div>
         </div>
