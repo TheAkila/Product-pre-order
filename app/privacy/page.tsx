@@ -41,12 +41,9 @@ export default function PrivacyPage() {
                 Introduction
               </h2>
               <p className="font-body text-slate-700 mb-4 leading-relaxed">
-                At Lifting Social, we are committed to protecting your privacy and ensuring the security of your personal information. 
-                This Privacy Policy explains how we collect, use, store, and protect your information when you use our pre-order website 
-                and services.
-              </p>
-              <p className="font-body text-slate-700 leading-relaxed">
-                By using our website and placing a pre-order, you agree to the collection and use of information in accordance with this policy.
+                At Lifting Social, we are committed to protecting the privacy and security of our customers' personal information. 
+                This Privacy Policy outlines how we collect, use, and safeguard your information when you visit or make a purchase on our website. 
+                By using our website, you consent to the practices described in this policy.
               </p>
             </section>
 
@@ -61,11 +58,11 @@ export default function PrivacyPage() {
                 <div className="bg-slate-50 rounded-xl p-6">
                   <h3 className="font-heading text-lg font-semibold text-brand-black mb-3">Personal Information</h3>
                   <ul className="font-body text-slate-700 space-y-2 list-disc list-inside">
-                    <li>Full name and contact information</li>
+                    <li>Full name and contact information (provided during registration/checkout)</li>
                     <li>Email address for order confirmations and updates</li>
                     <li>Phone number for SMS notifications and delivery coordination</li>
                     <li>Shipping address for product delivery</li>
-                    <li>Payment information (processed securely by PayHere)</li>
+                    <li>Payment and billing information processed securely by PayHere (we do not store full payment details)</li>
                   </ul>
                 </div>
 
@@ -94,24 +91,29 @@ export default function PrivacyPage() {
             {/* How We Use Information */}
             <section className="mb-12">
               <h2 className="font-heading text-2xl font-bold text-brand-black mb-4">How We Use Your Information</h2>
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div className="bg-brand-black text-white rounded-xl p-6">
-                  <h3 className="font-heading text-lg font-semibold mb-3">Order Processing</h3>
-                  <ul className="font-body text-slate-200 space-y-2 text-sm">
-                    <li>• Process and fulfill your pre-orders</li>
-                    <li>• Send order confirmations and updates</li>
-                    <li>• Coordinate shipping and delivery</li>
-                    <li>• Handle customer support inquiries</li>
-                  </ul>
+              <p className="font-body text-slate-700 mb-6 leading-relaxed">
+                We use the collected information for the following purposes:
+              </p>
+              <div className="space-y-4">
+                <div className="bg-slate-50 rounded-xl p-6 border-l-4 border-brand-red">
+                  <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">Order Processing & Fulfillment</h3>
+                  <p className="font-body text-slate-700 text-sm">To process and fulfill your orders, including shipping and delivery</p>
                 </div>
-                <div className="bg-brand-black text-white rounded-xl p-6">
-                  <h3 className="font-heading text-lg font-semibold mb-3">Communication</h3>
-                  <ul className="font-body text-slate-200 space-y-2 text-sm">
-                    <li>• Send important order notifications</li>
-                    <li>• Provide customer support</li>
-                    <li>• Share product updates (with consent)</li>
-                    <li>• Send marketing communications (opt-in)</li>
-                  </ul>
+                <div className="bg-slate-50 rounded-xl p-6 border-l-4 border-brand-red">
+                  <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">Customer Communication</h3>
+                  <p className="font-body text-slate-700 text-sm">To communicate with you regarding your purchases, provide customer support, and respond to inquiries or requests</p>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-6 border-l-4 border-brand-red">
+                  <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">Service Improvement</h3>
+                  <p className="font-body text-slate-700 text-sm">To improve our website, products, and services based on your feedback and browsing patterns</p>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-6 border-l-4 border-brand-red">
+                  <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">Fraud Prevention</h3>
+                  <p className="font-body text-slate-700 text-sm">To detect and prevent fraud, unauthorized activities, and abuse of our website</p>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-6 border-l-4 border-brand-red">
+                  <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">Personalization & Marketing</h3>
+                  <p className="font-body text-slate-700 text-sm">To personalize your shopping experience and present relevant product recommendations (with your consent)</p>
                 </div>
               </div>
             </section>
@@ -152,8 +154,19 @@ export default function PrivacyPage() {
 
             {/* Third-Party Services */}
             <section className="mb-12">
-              <h2 className="font-heading text-2xl font-bold text-brand-black mb-4">Third-Party Services</h2>
+              <h2 className="font-heading text-2xl font-bold text-brand-black mb-4">Information Sharing</h2>
+              <p className="font-body text-slate-700 mb-6 leading-relaxed">
+                We respect your privacy and do not sell, trade, or otherwise transfer your personal information to third parties without your consent, 
+                except in the following circumstances:
+              </p>
               <div className="space-y-4">
+                <div className="border-l-4 border-brand-red pl-6">
+                  <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">Trusted Service Providers</h3>
+                  <p className="font-body text-slate-700 text-sm leading-relaxed">
+                    We may share your information with third-party service providers who assist us in operating our website, 
+                    processing payments, and delivering products. These providers are contractually obligated to handle your data securely and confidentially.
+                  </p>
+                </div>
                 <div className="border-l-4 border-brand-red pl-6">
                   <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">PayHere Payment Processing</h3>
                   <p className="font-body text-slate-700 text-sm leading-relaxed">
@@ -164,7 +177,7 @@ export default function PrivacyPage() {
                 <div className="border-l-4 border-brand-red pl-6">
                   <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">Firebase/Google Cloud</h3>
                   <p className="font-body text-slate-700 text-sm leading-relaxed">
-                    We use Google Firebase for secure data storage and management. Google&apos;s privacy policy applies to 
+                    We use Google Firebase for secure data storage and management. Google's privacy policy applies to 
                     this service. All data is stored in encrypted format with appropriate access controls.
                   </p>
                 </div>
@@ -174,6 +187,32 @@ export default function PrivacyPage() {
                     We may use SMS service providers to send order confirmations and updates. These services only receive 
                     the minimum information necessary to deliver messages.
                   </p>
+                </div>
+                <div className="border-l-4 border-brand-red pl-6">
+                  <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">Legal Requirements</h3>
+                  <p className="font-body text-slate-700 text-sm leading-relaxed">
+                    We may disclose your information if required to do so by law or in response to valid legal requests or orders.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* Cookies and Tracking Technologies */}
+            <section className="mb-12">
+              <h2 className="font-heading text-2xl font-bold text-brand-black mb-4">Cookies and Tracking Technologies</h2>
+              <div className="bg-slate-50 rounded-xl p-6">
+                <p className="font-body text-slate-700 mb-4 leading-relaxed">
+                  We use cookies and similar technologies to enhance your browsing experience, analyze website traffic, and gather 
+                  information about your preferences and interactions with our website. You have the option to disable cookies through 
+                  your browser settings, but this may limit certain features and functionality of our website.
+                </p>
+                <div className="mt-4 border-t border-slate-200 pt-4">
+                  <h3 className="font-heading text-sm font-semibold text-brand-black mb-3">Types of Cookies Used:</h3>
+                  <ul className="font-body text-slate-700 space-y-2 text-sm list-disc list-inside">
+                    <li>Essential cookies for website functionality</li>
+                    <li>Analytics cookies to understand user behavior and improve services</li>
+                    <li>Performance cookies to optimize website speed and functionality</li>
+                  </ul>
                 </div>
               </div>
             </section>
@@ -234,14 +273,19 @@ export default function PrivacyPage() {
               </div>
             </section>
 
-            {/* Updates */}
-            <section className="mb-8">
-              <h2 className="font-heading text-2xl font-bold text-brand-black mb-4">Policy Updates</h2>
-              <p className="font-body text-slate-700 text-sm leading-relaxed">
-                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new 
-                Privacy Policy on this page and updating the &quot;Last Updated&quot; date. You are advised to review this Privacy Policy 
-                periodically for any changes.
+            {/* Policy Updates */}
+            <section className="mb-12">
+              <h2 className="font-heading text-2xl font-bold text-brand-black mb-4">Changes to the Privacy Policy</h2>
+              <p className="font-body text-slate-700 text-sm leading-relaxed mb-4">
+                We reserve the right to update or modify this Privacy Policy at any time. Any changes will be posted on this page 
+                with a revised "last updated" date. We encourage you to review this Privacy Policy periodically to stay informed about how we 
+                collect, use, and protect your information.
               </p>
+              <div className="bg-brand-black text-white rounded-xl p-4">
+                <p className="font-body text-xs text-slate-200">
+                  Last Updated: February 26, 2026
+                </p>
+              </div>
             </section>
           </div>
           
