@@ -273,7 +273,7 @@ export default function TermsPage() {
                       To cancel your order, please email us with your order number:
                     </p>
                     <p className="font-body text-slate-700 text-sm font-semibold">
-                      liftingsocial@gmail.com
+                      theliftingsocial@gmail.com
                     </p>
                   </div>
                 </div>

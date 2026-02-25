@@ -256,7 +256,7 @@ export default function PrivacyPage() {
                     <div>
                       <p className="font-body text-sm text-white">Email</p>
                       <a href="mailto:privacy@liftingsocial.com" className="font-body text-xs text-slate-300 hover:text-white">
-                        liftingsocial@gmail.com
+                        theliftingsocial@gmail.com
                       </a>
                     </div>
                   </div>
@@ -265,7 +265,7 @@ export default function PrivacyPage() {
                     <div>
                       <p className="font-body text-sm text-white">Address</p>
                       <p className="font-body text-xs text-slate-300">
-                        Lifting Social<br/>Sri Lanka
+                        358/c,<br/>Polgahalanda,<br/>Nittambuwa,<br/>Sri Lanka
                       </p>
                     </div>
                   </div>
