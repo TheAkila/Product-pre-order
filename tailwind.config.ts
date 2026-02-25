@@ -16,9 +16,9 @@ const config: Config = {
         'brand-red-light': '#DC2F02',
       },
       fontFamily: {
-        sans: ['var(--font-inter)'], // UI Elements
-        heading: ['var(--font-outfit)'], // Headings
-        body: ['var(--font-ibm-plex)'], // Body text
+        sans: ['var(--font-inter)', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'], // UI Elements
+        heading: ['var(--font-outfit)', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'], // Headings
+        body: ['var(--font-ibm-plex)', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'], // Body text
       },
       borderRadius: {
         'xl': '0.75rem',

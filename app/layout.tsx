@@ -8,19 +8,22 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
+  preload: true,
 });
 
 const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-outfit",
   display: "swap",
+  preload: true,
 });
 
 const ibmPlexSans = IBM_Plex_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-ibm-plex",
-  display: "swap",
+  display: "auto",
+  preload: true,
 });
 
 export const viewport: Viewport = {
