@@ -92,7 +92,8 @@ export async function POST(request: NextRequest) {
 
     // Calculate amount
     const productPrice = parseInt(process.env.NEXT_PUBLIC_PRODUCT_PRICE || '2500');
-    const amount = productPrice * body.quantity;
+    const deliveryFee = body.deliveryMethod === 'DELIVER' ? 200 : 0;
+    const amount = (productPrice * body.quantity) + deliveryFee;
 
     // Validate delivery details if delivery method is DELIVER
     if (body.deliveryMethod === 'DELIVER') {

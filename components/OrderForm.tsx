@@ -24,6 +24,9 @@ export default function OrderForm() {
   const [error, setError] = useState<string | null>(null);
 
   const productPrice = parseInt(process.env.NEXT_PUBLIC_PRODUCT_PRICE || '2500');
+  const deliveryFee = formData.deliveryMethod === 'DELIVER' ? 200 : 0;
+  const subtotal = productPrice * formData.quantity;
+  const totalAmount = subtotal + deliveryFee;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,8 +85,6 @@ export default function OrderForm() {
       setIsSubmitting(false);
     }
   };
-
-  const totalAmount = productPrice * formData.quantity;
 
   return (
     <section id="order-form" className="py-12 sm:py-16 md:py-20 bg-white">
@@ -319,26 +320,47 @@ export default function OrderForm() {
                 <div className="flex justify-between items-center mb-1">
                   <span className="font-body text-xs text-slate-500">Regular Price:</span>
                   <span className="font-body text-sm text-slate-400 line-through">
-                    LKR {(totalAmount * 1.2).toLocaleString()}
+                    LKR {(subtotal * 1.2).toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-body text-xs text-slate-500">Pre-Order Savings:</span>
                   <span className="font-body text-sm font-semibold text-green-600">
-                    -LKR {(totalAmount * 0.2).toLocaleString()}
+                    -LKR {(subtotal * 0.2).toLocaleString()}
                   </span>
                 </div>
               </div>
+
+              {/* Delivery Fee */}
+              {deliveryFee > 0 && (
+                <div className="flex justify-between items-center border-t pt-3 pb-3">
+                  <div>
+                    <span className="font-body text-xs sm:text-sm font-medium text-slate-600">Pre-Order Subtotal</span>
+                  </div>
+                  <span className="font-body font-semibold text-brand-black">
+                    LKR {subtotal.toLocaleString()}
+                  </span>
+                </div>
+              )}
+
+              {deliveryFee > 0 && (
+                <div className="flex justify-between items-center border-b pb-3">
+                  <span className="font-body text-xs sm:text-sm font-medium text-slate-600">Delivery Fee</span>
+                  <span className="font-body font-semibold text-brand-red">
+                    + LKR {deliveryFee.toLocaleString()}
+                  </span>
+                </div>
+              )}
               
-              <div className="flex justify-between items-center border-t pt-3">
-                <span className="font-body text-xs sm:text-sm font-medium text-slate-600">Pre-Order Total</span>
+              <div className={`flex justify-between items-center ${deliveryFee > 0 ? 'pt-3' : ''}`}>
+                <span className="font-body text-xs sm:text-sm font-medium text-slate-600">{deliveryFee > 0 ? 'Total Amount' : 'Pre-Order Total'}</span>
                 <span className="font-heading text-2xl sm:text-3xl font-bold text-brand-black">
                   LKR {totalAmount.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between items-center mt-2">
                 <p className="font-body text-xs text-slate-500">
-                  {formData.quantity} {formData.quantity === 1 ? 'item' : 'items'}
+                  {formData.quantity} {formData.quantity === 1 ? 'item' : 'items'}{deliveryFee > 0 ? ' + Delivery' : ''}
                 </p>
                 <p className="font-body text-xs font-semibold text-green-600">
                    20% Discount Applied
