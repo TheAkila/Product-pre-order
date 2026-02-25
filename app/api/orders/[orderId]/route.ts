@@ -5,10 +5,10 @@ import { db, getFirebaseStatus } from '@/lib/firebase';
 // DELETE /api/orders/[orderId] - Delete a specific order
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
-    const orderId = params.orderId;
+    const { orderId } = await params;
     console.log('DELETE request received for orderId:', orderId);
 
     if (!orderId) {
