@@ -97,9 +97,9 @@ export async function POST(request: NextRequest) {
 
     // Validate delivery details if delivery method is DELIVER
     if (body.deliveryMethod === 'DELIVER') {
-      if (!body.deliveryDetails?.address || !body.deliveryDetails?.city || !body.deliveryDetails?.postalCode) {
+      if (!body.deliveryDetails?.address || !body.deliveryDetails?.city) {
         return NextResponse.json(
-          { error: 'Delivery details are required for delivery orders' },
+          { error: 'Address and city are required for delivery orders' },
           { status: 400 }
         );
       }

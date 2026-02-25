@@ -51,9 +51,6 @@ export default function OrderForm() {
         if (!formData.deliveryDetails?.city?.trim()) {
           throw new Error('Please enter your city');
         }
-        if (!formData.deliveryDetails?.postalCode?.trim()) {
-          throw new Error('Please enter your postal code');
-        }
       }
       if (!formData.acceptedTerms) {
         throw new Error('Please accept the Terms of Service');
@@ -300,8 +297,7 @@ export default function OrderForm() {
                       deliveryDetails: { ...formData.deliveryDetails!, postalCode: e.target.value }
                     })}
                     className="input-seamless w-full"
-                    placeholder="00100"
-                    required={formData.deliveryMethod === 'DELIVER'}
+                    placeholder="00100 (Optional)"
                     disabled={isSubmitting}
                   />
                 </div>
