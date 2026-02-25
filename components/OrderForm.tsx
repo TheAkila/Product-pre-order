@@ -204,13 +204,13 @@ export default function OrderForm() {
                   className={`p-4 rounded-xl border-2 transition-all text-left ${
                     formData.deliveryMethod === 'DELIVER'
                       ? 'border-brand-red bg-red-50'
-                      : 'border-slate-300 bg-white hover:border-slate-400'
+                      : 'border-slate-200 bg-white hover:border-slate-300'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   <div className="flex items-start gap-3">
-                    <Truck size={20} strokeWidth={2} className={formData.deliveryMethod === 'DELIVER' ? 'text-brand-red' : 'text-slate-600'} />
+                    <Truck size={20} strokeWidth={2} className={formData.deliveryMethod === 'DELIVER' ? 'text-brand-red' : 'text-slate-500'} />
                     <div>
-                      <p className="font-body font-semibold text-slate-900">Deliver to Address</p>
+                      <p className="font-body font-semibold text-brand-black">Deliver to Address</p>
                       <p className="font-body text-xs text-slate-600 mt-1">Get it delivered to your home</p>
                     </div>
                   </div>
@@ -224,13 +224,13 @@ export default function OrderForm() {
                   className={`p-4 rounded-xl border-2 transition-all text-left ${
                     formData.deliveryMethod === 'COLLECT'
                       ? 'border-brand-red bg-red-50'
-                      : 'border-slate-300 bg-white hover:border-slate-400'
+                      : 'border-slate-200 bg-white hover:border-slate-300'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   <div className="flex items-start gap-3">
-                    <MapPin size={20} strokeWidth={2} className={formData.deliveryMethod === 'COLLECT' ? 'text-brand-red' : 'text-slate-600'} />
+                    <MapPin size={20} strokeWidth={2} className={formData.deliveryMethod === 'COLLECT' ? 'text-brand-red' : 'text-slate-500'} />
                     <div>
-                      <p className="font-body font-semibold text-slate-900">Collect at Point</p>
+                      <p className="font-body font-semibold text-brand-black">Collect at Point</p>
                       <p className="font-body text-xs text-slate-600 mt-1">Pick up from our location</p>
                     </div>
                   </div>
@@ -240,8 +240,8 @@ export default function OrderForm() {
 
             {/* Delivery Details Form - Show only if DELIVER is selected */}
             {formData.deliveryMethod === 'DELIVER' && (
-              <div className="bg-amber-50 rounded-xl p-4 sm:p-5 border border-amber-200 space-y-4">
-                <p className="font-body text-sm font-medium text-amber-900">
+              <div className="bg-red-50 rounded-xl p-4 sm:p-5 border border-red-200 space-y-4">
+                <p className="font-body text-sm font-medium text-brand-red-dark">
                   Please provide your delivery details
                 </p>
 
