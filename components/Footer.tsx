@@ -54,9 +54,7 @@ export default function Footer() {
               <a href="#product" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
                 View Collection
               </a>
-              <a href="#details" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
-                Size Guide
-              </a>
+             
               <a href="#order-form" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
                 Pre-Order Now
               </a>
