@@ -20,7 +20,7 @@ export default function Hero() {
 
       {/* Headline */}
       <h1 className="text-3xl sm:text-6xl md:text-7xl font-heading font-medium tracking-tight leading-tight text-center max-w-4xl px-4 text-balance">
-        Built for Champions!
+        Built for Champions! <br/>
         <br className="hidden md:block" />
         Engineered for Performance.
       </h1>
@@ -31,21 +31,7 @@ export default function Hero() {
       </p>
 
       {/* Pre-Order Discount Banner
-      <div className="mt-6 sm:mt-8 bg-gradient-to-r from-brand-red to-red-600 text-white px-6 py-3 rounded-full shadow-lg mx-4">
-        <div className="flex items-center justify-center gap-2 text-center">
-         
-          <div>
-            <p className="font-heading text-sm sm:text-base font-bold">LIMITED TIME: 20% OFF PRE-ORDERS</p>
-            <p className="font-body text-xs sm:text-sm opacity-90" suppressHydrationWarning>
-              Save LKR 500 • Ends {typeof window !== 'undefined' 
-                ? new Date(process.env.NEXT_PUBLIC_PREORDER_CLOSES || '2026-01-31').toLocaleDateString()
-                : 'January 31, 2026'
-              }
-            </p>
-          </div>
-         
-        </div>
-      </div> */}
+      
 
       {/* Buttons */}
       <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center w-full px-6 sm:px-0">
