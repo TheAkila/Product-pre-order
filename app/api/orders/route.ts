@@ -39,7 +39,6 @@ export async function GET() {
         orderId: doc.id,
         name: data.name,
         phone: data.phone,
-        size: data.size,
         quantity: data.quantity,
         amount: data.amount,
         paymentMethod: data.paymentMethod,
@@ -75,7 +74,7 @@ export async function POST(request: NextRequest) {
     const body: OrderFormData = await request.json();
 
     // Validate input
-    if (!body.name || !body.phone || !body.size || !body.quantity) {
+    if (!body.name || !body.phone || !body.quantity) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -107,7 +106,6 @@ export async function POST(request: NextRequest) {
     const orderData = {
       name: body.name.trim(),
       phone: body.phone.trim(),
-      size: body.size,
       quantity: body.quantity,
       amount,
       paymentMethod: 'PAYHERE',

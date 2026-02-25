@@ -24,7 +24,7 @@ export default function Product() {
             <div className="aspect-[4/5] bg-slate-100 relative overflow-hidden">
               <Image 
                 src="/images/Front.png" 
-                alt="Lifting Social T-shirt Front View - Black tee with chest logo"
+                alt="Lifting Social Elite Gym Shaker Front View"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
@@ -32,7 +32,7 @@ export default function Product() {
               />
             </div>
             <div className="p-4 sm:p-5 md:p-6 bg-white">
-              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">LIFTING SOCIAL on side</p>
+              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Premium Shaker Design</p>
               <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">make yours</p>
             </div>
           </div>
@@ -42,7 +42,7 @@ export default function Product() {
             <div className="aspect-[4/5] bg-slate-100 relative overflow-hidden">
               <Image 
                 src="/images/Back.png" 
-                alt="Lifting Social T-shirt Back View - BEAST MODE DESIGN"
+                alt="Lifting Social Elite Gym Shaker Back View - Premium Design"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"

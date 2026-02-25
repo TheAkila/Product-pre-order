@@ -6,15 +6,14 @@ service cloud.firestore {
     // Orders collection
     match /orders/{orderId} {
       // Allow anyone to create orders (for pre-order form submission)
-      allow create: if request.resource.data.keys().hasAll(['name', 'phone', 'size', 'quantity', 'amount', 'paymentMethod', 'paymentStatus', 'createdAt'])
-                    && request.resource.data.name is string
-                    && request.resource.data.phone is string
-                    && request.resource.data.size in ['S', 'M', 'L', 'XL', 'XXL']
-                    && request.resource.data.quantity is int
-                    && request.resource.data.quantity > 0
-                    && request.resource.data.amount is number
-                    && request.resource.data.paymentMethod == 'PAYHERE'
-                    && request.resource.data.paymentStatus == 'PENDING_PAYMENT';
+      allow create: if request.resource.data.keys().hasAll(['name', 'phone', 'quantity', 'amount', 'paymentMethod', 'paymentStatus', 'createdAt'])
+            && request.resource.data.name is string
+            && request.resource.data.phone is string
+            && request.resource.data.quantity is int
+            && request.resource.data.quantity > 0
+            && request.resource.data.amount is number
+            && request.resource.data.paymentMethod == 'PAYHERE'
+            && request.resource.data.paymentStatus == 'PENDING_PAYMENT';
       
       // Allow reading orders (for admin dashboard)
       // In production, add authentication check
@@ -24,7 +23,8 @@ service cloud.firestore {
       // Updates should only come from server-side (PayHere IPN)
       allow update: if false;
       
-      // Prevent deletions from client
+      // Allow deletions from server-side (admin API)
+      // Client-side deletions are blocked
       allow delete: if false;
     }
   }

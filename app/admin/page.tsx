@@ -15,7 +15,10 @@ import {
   RefreshCw,
   Filter,
   Calendar,
-  Eye
+  Eye,
+  Trash2,
+  X,
+  AlertTriangle
 } from 'lucide-react';
 
 export default function AdminPage() {
@@ -26,6 +29,9 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<PaymentStatus | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [deletingOrderId, setDeletingOrderId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,17 +128,55 @@ export default function AdminPage() {
     }
   };
 
+  const deleteOrder = async (orderId: string) => {
+    setDeleteError(null);
+    try {
+      console.log('Deleting order:', orderId);
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Delete response status:', response.status);
+      console.log('Delete response ok:', response.ok);
+
+      const responseText = await response.text();
+      console.log('Delete response text:', responseText);
+
+      let data;
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch (parseError) {
+        console.error('Failed to parse response:', parseError);
+        data = { error: responseText || 'Failed to delete order' };
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || data.details || `Failed to delete order (${response.status})`);
+      }
+
+      // Remove from local state
+      setOrders(orders.filter(o => o.orderId !== orderId));
+      setShowDeleteConfirm(false);
+      setDeletingOrderId(null);
+    } catch (err) {
+      console.error('Delete error:', err);
+      setDeleteError(err instanceof Error ? err.message : 'Failed to delete order');
+    }
+  };
+
   const exportToCSV = () => {
     const filteredOrders = filter === 'ALL' 
       ? orders 
       : orders.filter(order => order.paymentStatus === filter);
 
-    const headers = ['Order ID', 'Name', 'Phone', 'Size', 'Quantity', 'Amount', 'Payment Status', 'Created At'];
+    const headers = ['Order ID', 'Name', 'Phone', 'Quantity', 'Amount', 'Payment Status', 'Created At'];
     const rows = filteredOrders.map(order => [
       order.orderId,
       order.name,
       order.phone,
-      order.size,
       order.quantity,
       order.amount,
       order.paymentStatus,
@@ -172,15 +216,26 @@ export default function AdminPage() {
     revenue: orders.filter(o => o.paymentStatus === 'PAID').reduce((sum, o) => sum + o.amount, 0),
   };
 
-  // Size breakdown statistics
-  const sizeStats = ['S', 'M', 'L', 'XL', 'XXL'].map(size => {
-    const sizeOrders = orders.filter(o => o.size === size);
-    return {
-      size,
-      orders: sizeOrders.length,
-      quantity: sizeOrders.reduce((sum, o) => sum + o.quantity, 0),
-    };
-  });
+  // Quantity breakdown statistics
+  const quantityStats = Array.from(new Set(orders.map(o => o.quantity)))
+    .sort((a, b) => a - b)
+    .map(q => {
+      const qOrders = orders.filter(o => o.quantity === q);
+      return {
+        quantity: q,
+        orders: qOrders.length,
+        units: qOrders.reduce((sum, o) => sum + o.quantity, 0),
+      };
+    });
+
+  const mostPopularQuantity = (() => {
+    const counts: Record<number, number> = {};
+    orders.forEach(o => { counts[o.quantity] = (counts[o.quantity] || 0) + 1; });
+    const entries = Object.entries(counts);
+    if (entries.length === 0) return '-';
+    entries.sort((a, b) => Number(b[1]) - Number(a[1]));
+    return `${entries[0][0]} unit(s)`;
+  })();
 
   if (!isAuthenticated) {
     return (
@@ -360,149 +415,129 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Analytics Section */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Size Distribution */}
-          <div className="lg:col-span-2 bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="font-heading text-2xl font-bold text-brand-black mb-1">Size Distribution</h2>
-                <p className="font-body text-sm text-slate-600">Order breakdown by T-shirt sizes</p>
-              </div>
-              <div className="w-12 h-12 bg-brand-red/10 rounded-xl flex items-center justify-center">
-                <Package size={24} className="text-brand-red" strokeWidth={2} />
+        {/* Secondary Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <Eye size={24} className="text-purple-600" strokeWidth={2} />
               </div>
             </div>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-              {sizeStats.map((stat, index) => (
-                <div key={stat.size} className="bg-slate-50 rounded-2xl p-5 border border-slate-100 hover:border-brand-red hover:bg-brand-red/5 transition-all duration-300 group">
-                  <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-brand-red to-red-700 rounded-2xl mb-4 shadow-lg group-hover:scale-105 transition-transform">
-                      <span className="font-heading text-xl font-bold text-white">{stat.size}</span>
-                    </div>
-                    <div className="space-y-3">
-                      <div>
-                        <p className="font-body text-xs text-slate-500 uppercase tracking-wider mb-1">Orders</p>
-                        <p className="font-heading text-2xl font-bold text-brand-black">{stat.orders}</p>
-                      </div>
-                      <div className="pt-3 border-t border-slate-200">
-                        <p className="font-body text-xs text-slate-500 uppercase tracking-wider mb-1">Quantity</p>
-                        <p className="font-heading text-xl font-bold text-brand-red">{stat.quantity}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-6 pt-6 border-t border-slate-200">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-body text-slate-500">Most Popular Size:</span>
-                <span className="font-heading font-bold text-brand-red">
-                  {sizeStats.reduce((prev, current) => (prev.quantity > current.quantity) ? prev : current).size}
-                </span>
-              </div>
+            <div>
+              <p className="font-body text-xs text-slate-600 uppercase tracking-wider mb-2">Conversion Rate</p>
+              <p className="font-heading text-3xl font-bold text-purple-600 mb-1">
+                {stats.total > 0 ? Math.round((stats.paid / stats.total) * 100) : 0}%
+              </p>
+              <p className="font-body text-xs text-slate-500">Paid vs Total Orders</p>
             </div>
           </div>
 
-          {/* Quick Stats */}
-          <div className="space-y-4">
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
-              <div className="text-center">
-                <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Eye size={24} className="text-purple-600" strokeWidth={2} />
-                </div>
-                <h3 className="font-heading text-lg font-bold text-brand-black mb-2">Conversion Rate</h3>
-                <p className="font-heading text-3xl font-bold text-purple-600">
-                  {stats.total > 0 ? Math.round((stats.paid / stats.total) * 100) : 0}%
-                </p>
-                <p className="font-body text-xs text-slate-500 mt-1">Paid vs Total Orders</p>
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 shadow-lg text-white hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <TrendingUp size={24} className="text-white" strokeWidth={2} />
               </div>
             </div>
+            <div>
+              <p className="font-body text-xs text-white/80 uppercase tracking-wider mb-2">Avg Order Value</p>
+              <p className="font-heading text-2xl font-bold mb-1">
+                LKR {stats.paid > 0 ? Math.round(stats.revenue / stats.paid).toLocaleString() : 0}
+              </p>
+              <p className="font-body text-xs text-white/80">Per paid order</p>
+            </div>
+          </div>
 
-            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 shadow-lg text-white">
-              <div className="text-center">
-                <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp size={24} className="text-white" strokeWidth={2} />
-                </div>
-                <h3 className="font-heading text-lg font-bold mb-2">Avg Order Value</h3>
-                <p className="font-heading text-2xl font-bold">
-                  LKR {stats.paid > 0 ? Math.round(stats.revenue / stats.paid).toLocaleString() : 0}
-                </p>
-                <p className="font-body text-xs text-white/80 mt-1">Per paid order</p>
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                <Package size={24} className="text-orange-600" strokeWidth={2} />
               </div>
             </div>
-
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
-              <div className="text-center">
-                <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Package size={24} className="text-orange-600" strokeWidth={2} />
-                </div>
-                <h3 className="font-heading text-lg font-bold text-brand-black mb-2">Total Units</h3>
-                <p className="font-heading text-3xl font-bold text-orange-600">
-                  {orders.reduce((sum, order) => sum + order.quantity, 0)}
-                </p>
-                <p className="font-body text-xs text-slate-500 mt-1">T-shirts ordered</p>
-              </div>
+            <div>
+              <p className="font-body text-xs text-slate-600 uppercase tracking-wider mb-2">Total Units</p>
+              <p className="font-heading text-3xl font-bold text-orange-600 mb-1">
+                {orders.reduce((sum, order) => sum + order.quantity, 0)}
+              </p>
+              <p className="font-body text-xs text-slate-500">Gym shakers ordered</p>
             </div>
           </div>
         </div>
 
-        {/* Controls and Filters */}
+        {/* Search, Filter & Export Controls */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="mb-6">
+            <h2 className="font-heading text-xl font-bold text-brand-black mb-2">Orders List</h2>
+            <p className="font-body text-sm text-slate-600">Search, filter, and manage all pre-orders</p>
+          </div>
+
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 mb-6">
+            {/* Search Bar */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} strokeWidth={2} />
+              <input
+                type="text"
+                placeholder="Search by name, ID, or phone..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-slate-50 border-transparent rounded-xl pl-12 pr-4 py-3.5 text-brand-black font-body placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300"
+              />
+            </div>
             
-            {/* Search and Filter */}
-            <div className="flex flex-col sm:flex-row gap-4 flex-1">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} strokeWidth={2} />
-                <input
-                  type="text"
-                  placeholder="Search orders by name, ID, or phone..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-50 border-transparent rounded-xl pl-12 pr-4 py-3.5 text-brand-black font-body placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300"
-                />
-              </div>
-              
-              <div className="relative">
-                <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} strokeWidth={2} />
-                <select
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value as PaymentStatus | 'ALL')}
-                  className="appearance-none bg-slate-50 border-transparent rounded-xl pl-12 pr-10 py-3.5 text-brand-black font-body focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300 cursor-pointer"
-                >
-                  <option value="ALL">All Status</option>
-                  <option value="PAID">✅ Paid</option>
-                  <option value="PENDING_PAYMENT">⏳ Pending</option>
-                  <option value="CANCELLED">❌ Cancelled</option>
-                </select>
-              </div>
+            {/* Filter Dropdown */}
+            <div className="relative">
+              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} strokeWidth={2} />
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value as PaymentStatus | 'ALL')}
+                className="appearance-none bg-slate-50 border-transparent rounded-xl pl-12 pr-10 py-3.5 text-brand-black font-body focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300 cursor-pointer min-w-[180px]"
+              >
+                <option value="ALL">All Orders</option>
+                <option value="PAID">✅ Paid</option>
+                <option value="PENDING_PAYMENT">⏳ Pending</option>
+                <option value="CANCELLED">❌ Cancelled</option>
+              </select>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={exportToCSV}
-                className="bg-gradient-to-r from-brand-red to-red-700 text-white px-6 py-3.5 font-heading font-bold rounded-xl hover:from-red-700 hover:to-red-800 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl active:scale-95"
+                className="bg-gradient-to-r from-brand-red to-red-700 text-white px-4 sm:px-6 py-3.5 font-heading font-bold rounded-xl hover:from-red-700 hover:to-red-800 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl active:scale-95 whitespace-nowrap"
               >
                 <Download size={18} strokeWidth={2} />
                 <span className="hidden sm:inline">Export</span> CSV
               </button>
+              <button
+                onClick={fetchOrders}
+                disabled={loading}
+                className="bg-slate-100 text-brand-black px-4 sm:px-6 py-3.5 font-heading font-bold rounded-xl hover:bg-slate-200 transition-all flex items-center gap-2 disabled:opacity-50 whitespace-nowrap"
+              >
+                <RefreshCw size={18} className={loading ? 'animate-spin' : ''} strokeWidth={2} />
+                <span className="hidden sm:inline">Refresh</span>
+              </button>
             </div>
           </div>
 
-          {/* Results Summary */}
-          <div className="mt-6 pt-6 border-t border-slate-200 flex items-center justify-between text-sm">
+          {/* Results Info */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-slate-100 text-sm">
             <div className="font-body text-slate-600">
               Showing <span className="font-semibold text-brand-black">{filteredOrders.length}</span> of{' '}
               <span className="font-semibold text-brand-black">{orders.length}</span> orders
-              {searchQuery && <span className="text-brand-red"> (filtered by &quot;{searchQuery}&quot;)</span>}
+              {searchQuery && <span className="text-brand-red ml-1">(filtered)</span>}
             </div>
-            <div className="flex items-center gap-2 text-slate-500">
-              <RefreshCw size={16} />
-              <span>Auto-refresh: Off</span>
+            <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-slate-600">Paid: <span className="font-semibold">{filteredOrders.filter(o => o.paymentStatus === 'PAID').length}</span></span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                <span className="text-slate-600">Pending: <span className="font-semibold">{filteredOrders.filter(o => o.paymentStatus === 'PENDING_PAYMENT').length}</span></span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                <span className="text-slate-600">Cancelled: <span className="font-semibold">{filteredOrders.filter(o => o.paymentStatus === 'CANCELLED').length}</span></span>
+              </div>
             </div>
           </div>
         </div>
@@ -511,7 +546,7 @@ export default function AdminPage() {
         <div className="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-16">
-              <div className="w-16 h-16 bg-brand-red/10 rounded-2xl flex items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-brand-red/10 rounded-2xl flex items-center justify-center mb-4 animate-pulse">
                 <Loader2 className="animate-spin text-brand-red" size={32} strokeWidth={2} />
               </div>
               <p className="font-heading text-lg font-medium text-brand-black mb-2">Loading orders...</p>
@@ -561,31 +596,31 @@ export default function AdminPage() {
             <>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-slate-50 border-b-2 border-slate-100">
+                  <thead className="bg-gradient-to-r from-slate-100 to-slate-50 border-b-2 border-slate-200 sticky top-0">
                     <tr>
                       <th className="py-4 px-6 text-left">
-                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Order ID</span>
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Order ID</span>
                       </th>
                       <th className="py-4 px-6 text-left">
-                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Customer</span>
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Customer</span>
                       </th>
                       <th className="py-4 px-6 text-left">
-                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Contact</span>
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Contact</span>
                       </th>
                       <th className="py-4 px-6 text-center">
-                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Size</span>
-                      </th>
-                      <th className="py-4 px-6 text-center">
-                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Quantity</span>
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Quantity</span>
                       </th>
                       <th className="py-4 px-6 text-right">
-                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Amount</span>
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Amount</span>
                       </th>
                       <th className="py-4 px-6 text-center">
-                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Status</span>
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Status</span>
                       </th>
                       <th className="py-4 px-6 text-right">
-                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Date</span>
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Date</span>
+                      </th>
+                      <th className="py-4 px-6 text-center">
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Action</span>
                       </th>
                     </tr>
                   </thead>
@@ -607,11 +642,6 @@ export default function AdminPage() {
                         </td>
                         <td className="py-4 px-6">
                           <p className="font-body text-slate-600">{order.phone}</p>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <span className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-brand-red to-red-700 text-white font-heading font-bold text-sm rounded-lg shadow-sm">
-                            {order.size}
-                          </span>
                         </td>
                         <td className="py-4 px-6 text-center">
                           <span className="inline-flex items-center justify-center w-8 h-8 bg-slate-100 group-hover:bg-slate-200 text-slate-700 font-heading font-bold text-sm rounded-lg transition-colors">
@@ -651,6 +681,19 @@ export default function AdminPage() {
                             })}
                           </p>
                         </td>
+                        <td className="py-4 px-6 text-center">
+                          <button
+                            onClick={() => {
+                              setDeletingOrderId(order.orderId);
+                              setShowDeleteConfirm(true);
+                              setDeleteError(null);
+                            }}
+                            className="inline-flex items-center justify-center p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all hover:scale-110"
+                            title="Delete order"
+                          >
+                            <Trash2 size={18} strokeWidth={2} />
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -658,19 +701,24 @@ export default function AdminPage() {
               </div>
               
               {/* Table Footer */}
-              <div className="bg-slate-50 px-6 py-4 border-t border-slate-100">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="font-body text-slate-600">
-                    <span className="font-semibold text-brand-black">{filteredOrders.length}</span> orders displayed
+              <div className="bg-gradient-to-r from-slate-50 to-slate-100 px-6 py-5 border-t-2 border-slate-200">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="font-body text-slate-700 font-medium">
+                    <span className="text-brand-red font-bold text-lg">{filteredOrders.length}</span>
+                    <span className="text-slate-600"> orders displayed</span>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center gap-6 text-sm">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span className="text-slate-600">Paid: {filteredOrders.filter(o => o.paymentStatus === 'PAID').length}</span>
+                      <div className="w-3 h-3 bg-green-500 rounded-full shadow-sm"></div>
+                      <span className="text-slate-700"><span className="font-semibold">{filteredOrders.filter(o => o.paymentStatus === 'PAID').length}</span> Paid</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                      <span className="text-slate-600">Pending: {filteredOrders.filter(o => o.paymentStatus === 'PENDING_PAYMENT').length}</span>
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full shadow-sm"></div>
+                      <span className="text-slate-700"><span className="font-semibold">{filteredOrders.filter(o => o.paymentStatus === 'PENDING_PAYMENT').length}</span> Pending</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-red-500 rounded-full shadow-sm"></div>
+                      <span className="text-slate-700"><span className="font-semibold">{filteredOrders.filter(o => o.paymentStatus === 'CANCELLED').length}</span> Cancelled</span>
                     </div>
                   </div>
                 </div>
@@ -678,6 +726,56 @@ export default function AdminPage() {
             </>
           )}
         </div>
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteConfirm && deletingOrderId && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 animate-in">
+              <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-6">
+                <AlertTriangle className="text-red-600" size={24} strokeWidth={2} />
+              </div>
+              
+              <h2 className="font-heading text-xl font-bold text-brand-black text-center mb-2">
+                Delete Order?
+              </h2>
+              
+              <p className="font-body text-sm text-slate-600 text-center mb-2">
+                You are about to delete order <span className="font-mono font-semibold text-brand-black">{deletingOrderId.slice(0, 8)}</span>
+              </p>
+              
+              <p className="font-body text-xs text-slate-500 text-center mb-6">
+                This action cannot be undone.
+              </p>
+
+              {deleteError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
+                  <p className="font-body text-xs text-red-700">{deleteError}</p>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                    setDeletingOrderId(null);
+                    setDeleteError(null);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"
+                >
+                  <X size={16} strokeWidth={2} />
+                  Cancel
+                </button>
+                <button
+                  onClick={() => deleteOrder(deletingOrderId)}
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Trash2 size={16} strokeWidth={2} />
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );

@@ -62,7 +62,7 @@ export default function Hero() {
           }
           className="w-full sm:w-auto px-8 py-3 sm:px-10 sm:py-4 text-lg sm:text-xl font-heading font-bold text-brand-black bg-transparent border-2 border-brand-black hover:bg-neutral-50 transition-all rounded-lg"
         >
-          View Collection
+          View Product
         </button>
       </div>
 

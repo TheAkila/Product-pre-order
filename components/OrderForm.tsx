@@ -2,14 +2,13 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { OrderFormData, TShirtSize } from '@/types/order';
+import { OrderFormData } from '@/types/order';
 import { Loader2, ShoppingBag, User, Phone, Ruler, Hash } from 'lucide-react';
 
 export default function OrderForm() {
   const [formData, setFormData] = useState<OrderFormData>({
     name: '',
     phone: '',
-    size: 'M',
     quantity: 1,
     acceptedTerms: false,
     acceptedPrivacy: false,
@@ -18,7 +17,6 @@ export default function OrderForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const sizes: TShirtSize[] = ['S', 'M', 'L', 'XL', 'XXL'];
   const productPrice = parseInt(process.env.NEXT_PUBLIC_PRODUCT_PRICE || '2500');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -181,7 +179,7 @@ export default function OrderForm() {
               </div>
               <div className="flex justify-between items-center mt-2">
                 <p className="font-body text-xs text-slate-500">
-                  {formData.quantity} {formData.quantity === 1 ? 'item' : 'items'} · Size {formData.size}
+                  {formData.quantity} {formData.quantity === 1 ? 'item' : 'items'}
                 </p>
                 <p className="font-body text-xs font-semibold text-green-600">
                    20% Discount Applied
@@ -252,7 +250,7 @@ export default function OrderForm() {
               ) : (
                 <>
                   <ShoppingBag size={20} strokeWidth={2.5} />
-                  Pay & Reserve Your Tee
+                  Pay & Reserve Your Shaker
                 </>
               )}
             </button>
