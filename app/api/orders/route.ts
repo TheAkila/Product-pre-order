@@ -43,6 +43,8 @@ export async function GET() {
         amount: data.amount,
         paymentMethod: data.paymentMethod,
         paymentStatus: data.paymentStatus,
+        deliveryMethod: data.deliveryMethod,
+        deliveryDetails: data.deliveryDetails,
         createdAt: data.createdAt.toDate(),
         updatedAt: data.updatedAt?.toDate(),
       });
@@ -92,6 +94,16 @@ export async function POST(request: NextRequest) {
     const productPrice = parseInt(process.env.NEXT_PUBLIC_PRODUCT_PRICE || '2500');
     const amount = productPrice * body.quantity;
 
+    // Validate delivery details if delivery method is DELIVER
+    if (body.deliveryMethod === 'DELIVER') {
+      if (!body.deliveryDetails?.address || !body.deliveryDetails?.city || !body.deliveryDetails?.postalCode) {
+        return NextResponse.json(
+          { error: 'Delivery details are required for delivery orders' },
+          { status: 400 }
+        );
+      }
+    }
+
     // Create order in Firebase
     const firebaseStatus = getFirebaseStatus();
     if (!firebaseStatus.isInitialized || !db) {
@@ -110,6 +122,14 @@ export async function POST(request: NextRequest) {
       amount,
       paymentMethod: 'PAYHERE',
       paymentStatus: 'PENDING_PAYMENT',
+      deliveryMethod: body.deliveryMethod,
+      ...(body.deliveryMethod === 'DELIVER' && {
+        deliveryDetails: {
+          address: body.deliveryDetails?.address?.trim(),
+          city: body.deliveryDetails?.city?.trim(),
+          postalCode: body.deliveryDetails?.postalCode?.trim(),
+        }
+      }),
       createdAt: Timestamp.now(),
     };
 

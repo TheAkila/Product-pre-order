@@ -2,14 +2,20 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { OrderFormData } from '@/types/order';
-import { Loader2, ShoppingBag, User, Phone, Ruler, Hash, Plus, Minus } from 'lucide-react';
+import { OrderFormData, DeliveryMethod } from '@/types/order';
+import { Loader2, ShoppingBag, User, Phone, Ruler, Hash, Plus, Minus, Truck, MapPin } from 'lucide-react';
 
 export default function OrderForm() {
   const [formData, setFormData] = useState<OrderFormData>({
     name: '',
     phone: '',
     quantity: 1,
+    deliveryMethod: 'COLLECT',
+    deliveryDetails: {
+      address: '',
+      city: '',
+      postalCode: '',
+    },
     acceptedTerms: false,
     acceptedPrivacy: false,
   });
@@ -34,6 +40,17 @@ export default function OrderForm() {
       }
       if (formData.quantity < 1) {
         throw new Error('Quantity must be at least 1');
+      }
+      if (formData.deliveryMethod === 'DELIVER') {
+        if (!formData.deliveryDetails?.address?.trim()) {
+          throw new Error('Please enter your delivery address');
+        }
+        if (!formData.deliveryDetails?.city?.trim()) {
+          throw new Error('Please enter your city');
+        }
+        if (!formData.deliveryDetails?.postalCode?.trim()) {
+          throw new Error('Please enter your postal code');
+        }
       }
       if (!formData.acceptedTerms) {
         throw new Error('Please accept the Terms of Service');
@@ -172,6 +189,123 @@ export default function OrderForm() {
                 </button>
               </div>
             </div>
+
+            {/* Delivery Method Selection */}
+            <div>
+              <label className="font-body text-sm font-medium text-slate-700 mb-3 block">
+                How would you like to receive your order?
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Deliver Option */}
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, deliveryMethod: 'DELIVER' })}
+                  disabled={isSubmitting}
+                  className={`p-4 rounded-xl border-2 transition-all text-left ${
+                    formData.deliveryMethod === 'DELIVER'
+                      ? 'border-brand-red bg-red-50'
+                      : 'border-slate-300 bg-white hover:border-slate-400'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  <div className="flex items-start gap-3">
+                    <Truck size={20} strokeWidth={2} className={formData.deliveryMethod === 'DELIVER' ? 'text-brand-red' : 'text-slate-600'} />
+                    <div>
+                      <p className="font-body font-semibold text-slate-900">Deliver to Address</p>
+                      <p className="font-body text-xs text-slate-600 mt-1">Get it delivered to your home</p>
+                    </div>
+                  </div>
+                </button>
+
+                {/* Collect Option */}
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, deliveryMethod: 'COLLECT' })}
+                  disabled={isSubmitting}
+                  className={`p-4 rounded-xl border-2 transition-all text-left ${
+                    formData.deliveryMethod === 'COLLECT'
+                      ? 'border-brand-red bg-red-50'
+                      : 'border-slate-300 bg-white hover:border-slate-400'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  <div className="flex items-start gap-3">
+                    <MapPin size={20} strokeWidth={2} className={formData.deliveryMethod === 'COLLECT' ? 'text-brand-red' : 'text-slate-600'} />
+                    <div>
+                      <p className="font-body font-semibold text-slate-900">Collect at Point</p>
+                      <p className="font-body text-xs text-slate-600 mt-1">Pick up from our location</p>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Delivery Details Form - Show only if DELIVER is selected */}
+            {formData.deliveryMethod === 'DELIVER' && (
+              <div className="bg-amber-50 rounded-xl p-4 sm:p-5 border border-amber-200 space-y-4">
+                <p className="font-body text-sm font-medium text-amber-900">
+                  Please provide your delivery details
+                </p>
+
+                {/* Address */}
+                <div>
+                  <label htmlFor="address" className="block font-body text-sm font-medium text-slate-700 mb-2">
+                    Delivery Address
+                  </label>
+                  <input
+                    type="text"
+                    id="address"
+                    value={formData.deliveryDetails?.address || ''}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      deliveryDetails: { ...formData.deliveryDetails!, address: e.target.value }
+                    })}
+                    className="input-seamless w-full"
+                    placeholder="123 Main Street"
+                    required={formData.deliveryMethod === 'DELIVER'}
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                {/* City */}
+                <div>
+                  <label htmlFor="city" className="block font-body text-sm font-medium text-slate-700 mb-2">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    id="city"
+                    value={formData.deliveryDetails?.city || ''}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      deliveryDetails: { ...formData.deliveryDetails!, city: e.target.value }
+                    })}
+                    className="input-seamless w-full"
+                    placeholder="Colombo"
+                    required={formData.deliveryMethod === 'DELIVER'}
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                {/* Postal Code */}
+                <div>
+                  <label htmlFor="postalCode" className="block font-body text-sm font-medium text-slate-700 mb-2">
+                    Postal Code
+                  </label>
+                  <input
+                    type="text"
+                    id="postalCode"
+                    value={formData.deliveryDetails?.postalCode || ''}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      deliveryDetails: { ...formData.deliveryDetails!, postalCode: e.target.value }
+                    })}
+                    className="input-seamless w-full"
+                    placeholder="00100"
+                    required={formData.deliveryMethod === 'DELIVER'}
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Total Amount */}
             <div className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 border-2 border-brand-black relative overflow-hidden">

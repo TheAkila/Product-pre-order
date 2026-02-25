@@ -176,7 +176,7 @@ export default function AdminPage() {
       ? orders 
       : orders.filter(order => order.paymentStatus === filter);
 
-    const headers = ['Order ID', 'Name', 'Phone', 'Quantity', 'Amount', 'Payment Status', 'Created At'];
+    const headers = ['Order ID', 'Name', 'Phone', 'Quantity', 'Amount', 'Payment Status', 'Delivery Method', 'Delivery Address', 'Delivery City', 'Delivery Postal Code', 'Created At'];
     const rows = filteredOrders.map(order => [
       order.orderId,
       order.name,
@@ -184,12 +184,16 @@ export default function AdminPage() {
       order.quantity,
       order.amount,
       order.paymentStatus,
+      order.deliveryMethod,
+      order.deliveryMethod === 'DELIVER' ? (order.deliveryDetails?.address || '') : 'N/A',
+      order.deliveryMethod === 'DELIVER' ? (order.deliveryDetails?.city || '') : 'N/A',
+      order.deliveryMethod === 'DELIVER' ? (order.deliveryDetails?.postalCode || '') : 'N/A',
       new Date(order.createdAt).toLocaleString(),
     ]);
 
     const csvContent = [
       headers.join(','),
-      ...rows.map(row => row.join(',')),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(',')),
     ].join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -620,6 +624,9 @@ export default function AdminPage() {
                       <th className="py-4 px-6 text-center">
                         <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Status</span>
                       </th>
+                      <th className="py-4 px-6 text-left">
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Delivery</span>
+                      </th>
                       <th className="py-4 px-6 text-right">
                         <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Date</span>
                       </th>
@@ -669,6 +676,24 @@ export default function AdminPage() {
                           >
                             {order.paymentStatus === 'PAID' ? '✅ Paid' : order.paymentStatus === 'PENDING_PAYMENT' ? '⏳ Pending' : '❌ Cancelled'}
                           </span>
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="text-sm">
+                            {order.deliveryMethod === 'DELIVER' ? (
+                              <div className="space-y-1">
+                                <p className="font-body font-semibold text-slate-900">🚚 Deliver</p>
+                                <div className="text-xs text-slate-500">
+                                  <p>{order.deliveryDetails?.address}</p>
+                                  <p>{order.deliveryDetails?.city}, {order.deliveryDetails?.postalCode}</p>
+                                </div>
+                              </div>
+                            ) : (
+                              <div>
+                                <p className="font-body font-semibold text-slate-900">📍 Collect</p>
+                                <p className="text-xs text-slate-500">At Point</p>
+                              </div>
+                            )}
+                          </div>
                         </td>
                         <td className="py-4 px-6 text-right">
                           <p className="font-body text-sm text-slate-500" suppressHydrationWarning>
