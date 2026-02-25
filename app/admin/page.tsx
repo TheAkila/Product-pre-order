@@ -32,6 +32,7 @@ export default function AdminPage() {
   const [deletingOrderId, setDeletingOrderId] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,6 +131,7 @@ export default function AdminPage() {
 
   const deleteOrder = async (orderId: string) => {
     setDeleteError(null);
+    setIsDeleting(true);
     try {
       console.log('Deleting order:', orderId);
       const response = await fetch(`/api/orders/${orderId}`, {
@@ -161,9 +163,11 @@ export default function AdminPage() {
       setOrders(orders.filter(o => o.orderId !== orderId));
       setShowDeleteConfirm(false);
       setDeletingOrderId(null);
+      setIsDeleting(false);
     } catch (err) {
       console.error('Delete error:', err);
       setDeleteError(err instanceof Error ? err.message : 'Failed to delete order');
+      setIsDeleting(false);
     }
   };
 
@@ -760,17 +764,28 @@ export default function AdminPage() {
                     setDeletingOrderId(null);
                     setDeleteError(null);
                   }}
-                  className="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <X size={16} strokeWidth={2} />
                   Cancel
                 </button>
                 <button
                   onClick={() => deleteOrder(deletingOrderId)}
-                  className="flex-1 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Trash2 size={16} strokeWidth={2} />
-                  Delete
+                  {isDeleting ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" strokeWidth={2} />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 size={16} strokeWidth={2} />
+                      Delete
+                    </>
+                  )}
                 </button>
               </div>
             </div>
