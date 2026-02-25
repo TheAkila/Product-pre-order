@@ -41,7 +41,7 @@ export default function PrivacyPage() {
                 Introduction
               </h2>
               <p className="font-body text-slate-700 mb-4 leading-relaxed">
-                At Lifting Social, we are committed to protecting the privacy and security of our customers' personal information. 
+                At Lifting Social, we are committed to protecting the privacy and security of our customers{`'`} personal information. 
                 This Privacy Policy outlines how we collect, use, and safeguard your information when you visit or make a purchase on our website. 
                 By using our website, you consent to the practices described in this policy.
               </p>
@@ -177,7 +177,7 @@ export default function PrivacyPage() {
                 <div className="border-l-4 border-brand-red pl-6">
                   <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">Firebase/Google Cloud</h3>
                   <p className="font-body text-slate-700 text-sm leading-relaxed">
-                    We use Google Firebase for secure data storage and management. Google's privacy policy applies to 
+                    We use Google Firebase for secure data storage and management. Google{`'`}s privacy policy applies to 
                     this service. All data is stored in encrypted format with appropriate access controls.
                   </p>
                 </div>
@@ -278,7 +278,7 @@ export default function PrivacyPage() {
               <h2 className="font-heading text-2xl font-bold text-brand-black mb-4">Changes to the Privacy Policy</h2>
               <p className="font-body text-slate-700 text-sm leading-relaxed mb-4">
                 We reserve the right to update or modify this Privacy Policy at any time. Any changes will be posted on this page 
-                with a revised "last updated" date. We encourage you to review this Privacy Policy periodically to stay informed about how we 
+                with a revised {`"last updated"`} date. We encourage you to review this Privacy Policy periodically to stay informed about how we 
                 collect, use, and protect your information.
               </p>
               <div className="bg-brand-black text-white rounded-xl p-4">

@@ -332,7 +332,7 @@ export default function TermsPage() {
               </h2>
               <div className="bg-slate-50 rounded-xl p-6">
                 <p className="font-body text-slate-700 mb-4 leading-relaxed text-sm">
-                  Lifting Social's liability is limited to the purchase price of the product. We are not liable for:
+                  Lifting Social{`'`}s liability is limited to the purchase price of the product. We are not liable for:
                 </p>
                 <ul className="font-body text-slate-700 space-y-2 list-disc list-inside text-sm">
                   <li>Indirect, special, incidental, or consequential damages</li>
