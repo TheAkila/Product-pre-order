@@ -282,7 +282,7 @@ export default function OrderForm() {
 
             {/* Security Note */}
             <p className="font-body text-xs text-slate-500 text-center pt-4">
-              <span className="font-medium text-slate-700">🔒 Secure Payment:</span> Powered by PayHere. 
+              <span className="font-medium text-slate-700">Secure Payment:</span> Powered by PayHere. 
               Your payment information is encrypted and secure.
             </p>
           </form>
