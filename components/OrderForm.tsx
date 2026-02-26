@@ -255,7 +255,7 @@ export default function OrderForm() {
                     <MapPin size={20} strokeWidth={2} className={formData.deliveryMethod === 'COLLECT' ? 'text-brand-red' : 'text-slate-500'} />
                     <div>
                       <p className="font-body font-semibold text-brand-black">Collect at Point</p>
-                      <p className="font-body text-xs text-slate-600 mt-1">Pick up from our location</p>
+                      <p className="font-body text-xs text-slate-600 mt-1">Pick up from Colombo 07</p>
                     </div>
                   </div>
                 </button>
