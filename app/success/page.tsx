@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { CheckCircle, Package, Clock, MessageCircle } from 'lucide-react';
+import Logo from '@/components/Logo';
+import { Package, Clock, MessageCircle } from 'lucide-react';
 
 export default function SuccessPage() {
   return (
@@ -8,9 +9,9 @@ export default function SuccessPage() {
         {/* Success Icon */}
         <div className="flex justify-center mb-6 sm:mb-8">
           <div className="relative">
-            <div className="absolute inset-0 bg-green-500/20 rounded-full animate-ping"></div>
-            <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-green-500 rounded-full flex items-center justify-center">
-              <CheckCircle size={40} className="sm:w-12 sm:h-12 text-white" strokeWidth={2.5} />
+            <div className="absolute inset-0 bg-brand-red/20 rounded-full animate-ping scale-125"></div>
+            <div className="relative">
+              <Logo size="lg" className="opacity-100" />
             </div>
           </div>
         </div>
@@ -25,7 +26,7 @@ export default function SuccessPage() {
         </p>
 
         {/* Success Message */}
-        <div className="bg-white rounded-2xl sm:rounded-3xl border-2 border-green-500/20 p-6 sm:p-8 md:p-12 mb-6 sm:mb-8">
+        <div className="bg-white rounded-2xl sm:rounded-3xl border-2 border-slate-200 p-6 sm:p-8 md:p-12 mb-6 sm:mb-8 shadow-sm">
           <p className="font-body text-base sm:text-lg text-brand-black mb-4">
             Thank you for supporting Lifting Social! 
           </p>
@@ -33,7 +34,7 @@ export default function SuccessPage() {
             You&apos;ll receive a confirmation message on your phone shortly.
           </p>
           <p className="font-body text-sm sm:text-base text-slate-600">
-            We&apos;ll keep you updated every step of the way until your limited-edition tee arrives.
+            We&apos;ll keep you updated every step of the way until your Elite Gym Shaker arrives.
           </p>
         </div>
 
