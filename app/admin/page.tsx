@@ -663,7 +663,92 @@ export default function AdminPage() {
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
+              {/* Mobile Card View */}
+              <div className="block md:hidden divide-y divide-slate-100">
+                {filteredOrders.map((order) => (
+                  <div key={order.orderId} className="p-4 hover:bg-slate-50/50 transition-colors">
+                    {/* Row 1: Order ID + Date + Delete */}
+                    <div className="flex items-center justify-between mb-3">
+                      <code className="text-xs bg-slate-100 px-2.5 py-1 rounded-lg text-slate-700 font-mono">
+                        #{order.orderId.slice(0, 8)}
+                      </code>
+                      <div className="flex items-center gap-2">
+                        <p className="font-body text-xs text-slate-400" suppressHydrationWarning>
+                          {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </p>
+                        <button
+                          onClick={() => { setDeletingOrderId(order.orderId); setShowDeleteConfirm(true); setDeleteError(null); }}
+                          className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                        >
+                          <Trash2 size={15} strokeWidth={2} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Row 2: Name + Amount */}
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <p className="font-body font-bold text-brand-black">{order.name}</p>
+                        <p className="font-body text-xs text-slate-500">{order.email}</p>
+                        <p className="font-body text-xs text-slate-500">{order.phone}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-body font-bold text-brand-black">LKR {order.amount.toLocaleString()}</p>
+                        <p className="font-body text-xs text-slate-500">Qty: {order.quantity}</p>
+                      </div>
+                    </div>
+
+                    {/* Row 3: Delivery info */}
+                    <div className="mb-3 text-xs text-slate-600">
+                      {order.deliveryMethod === 'DELIVER' ? (
+                        <span>{order.deliveryDetails?.address}, {order.deliveryDetails?.city}</span>
+                      ) : (
+                        <span>Collect at point</span>
+                      )}
+                    </div>
+
+                    {/* Row 4: Payment status + Delivery status */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full border ${
+                        order.paymentStatus === 'PAID' ? 'bg-green-50 text-green-700 border-green-200'
+                        : order.paymentStatus === 'PENDING_PAYMENT' ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                        : 'bg-red-50 text-red-700 border-red-200'
+                      }`}>
+                        {order.paymentStatus === 'PAID' ? 'Paid' : order.paymentStatus === 'PENDING_PAYMENT' ? 'Pending' : 'Cancelled'}
+                      </span>
+
+                      {order.paymentStatus === 'PAID' ? (
+                        <select
+                          value={order.deliveryStatus || 'PROCESSING'}
+                          onChange={async (e) => {
+                            const newStatus = e.target.value as 'PROCESSING' | 'SHIPPED' | 'DELIVERED';
+                            if (newStatus === (order.deliveryStatus || 'PROCESSING')) return;
+                            if (confirm(`Update delivery status to ${newStatus}? Customer will receive an SMS notification.`)) {
+                              setUpdatingStatusOrderId(order.orderId);
+                              await updateDeliveryStatus(order.orderId, newStatus);
+                            }
+                          }}
+                          disabled={updatingStatusOrderId === order.orderId && isUpdatingStatus}
+                          className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full border cursor-pointer transition-all disabled:opacity-50 disabled:cursor-wait ${
+                            order.deliveryStatus === 'DELIVERED' ? 'bg-green-50 text-green-700 border-green-200'
+                            : order.deliveryStatus === 'SHIPPED' ? 'bg-blue-50 text-blue-700 border-blue-200'
+                            : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                          }`}
+                        >
+                          <option value="PROCESSING">Processing</option>
+                          <option value="SHIPPED">Shipped</option>
+                          <option value="DELIVERED">Delivered</option>
+                        </select>
+                      ) : (
+                        <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full bg-gray-50 text-gray-500 border border-gray-200">No Status</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gradient-to-r from-slate-100 to-slate-50 border-b-2 border-slate-200 sticky top-0">
                     <tr>
@@ -832,8 +917,8 @@ export default function AdminPage() {
                     ))}
                   </tbody>
                 </table>
-              </div>
-              
+              </div>{/* end hidden md:block overflow-x-auto */}
+
               {/* Table Footer */}
               <div className="bg-gradient-to-r from-slate-50 to-slate-100 px-6 py-5 border-t-2 border-slate-200">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
