@@ -16,39 +16,15 @@ service cloud.firestore {
             && request.resource.data.paymentStatus == 'PENDING_PAYMENT';
       
       // Allow reading orders (for admin dashboard)
-      // In production, add authentication check
       allow read: if true;
       
-      // Allow updates for PayHere payment status changes and delivery status updates
-      // PayHere IPN and admin delivery updates
-      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['paymentStatus', 'paymentId', 'updatedAt', 'deliveryStatus'])
-            && (
-              // PayHere payment status updates
-              (request.resource.data.diff(resource.data).affectedKeys().hasAll(['paymentStatus', 'updatedAt']) &&
-               request.resource.data.paymentStatus in ['PAID', 'PENDING_PAYMENT', 'CANCELLED']) ||
-              // Admin delivery status updates
-              (request.resource.data.diff(resource.data).affectedKeys().hasAll(['deliveryStatus', 'updatedAt']) &&
-               request.resource.data.deliveryStatus in ['PROCESSING', 'SHIPPED', 'DELIVERED'])
-            );
+      // Allow updates for payment status and delivery status
+      // Simplified rule - only allow updating specific fields
+      allow update: if request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['paymentStatus', 'paymentId', 'updatedAt', 'deliveryStatus']);
       
       // Allow deletions from admin operations
-      // In production, add proper authentication/authorization
       allow delete: if true;
     }
   }
 }
-
-/**
- * Security Notes:
- * 
- * 1. Orders can only be created with PENDING_PAYMENT status
- * 2. Updates are blocked from client-side to prevent tampering
- * 3. PayHere IPN updates come from server-side API routes (bypasses these rules)
- * 4. Add proper authentication for read access in production
- * 
- * For production with admin authentication:
- * 
- * allow read: if request.auth != null && request.auth.token.admin == true;
- * 
- * Or use custom claims or another authentication method
- */

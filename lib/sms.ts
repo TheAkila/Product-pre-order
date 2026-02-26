@@ -62,12 +62,13 @@ async function sendSMS(
   message: string,
   senderId?: string
 ): Promise<SMSResponse> {
-  const apiToken = process.env.TEXTLK_API_TOKEN;
+  // Support both API_TOKEN and API_KEY for backwards compatibility
+  const apiToken = process.env.TEXTLK_API_TOKEN || process.env.TEXTLK_API_KEY;
   const senderIdEnv = process.env.TEXTLK_SENDER_ID || 'LiftSocial';
   const finalSenderId = senderId || senderIdEnv;
 
   if (!apiToken) {
-    console.warn('❌ TEXTLK_API_TOKEN not configured');
+    console.warn('❌ TEXTLK_API_TOKEN/TEXTLK_API_KEY not configured');
     return {
       success: false,
       message: 'SMS service not configured - missing API token',

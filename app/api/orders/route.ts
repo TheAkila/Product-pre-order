@@ -46,6 +46,7 @@ export async function GET() {
         paymentMethod: data.paymentMethod,
         paymentStatus: data.paymentStatus,
         deliveryMethod: data.deliveryMethod,
+        deliveryStatus: data.deliveryStatus || 'PROCESSING',
         deliveryDetails: data.deliveryDetails,
         createdAt: data.createdAt.toDate(),
         updatedAt: data.updatedAt?.toDate(),
@@ -126,6 +127,7 @@ export async function POST(request: NextRequest) {
       amount,
       paymentMethod: 'PAYHERE',
       paymentStatus: 'PENDING_PAYMENT',
+      deliveryStatus: 'PROCESSING',
       deliveryMethod: body.deliveryMethod,
       ...(body.deliveryMethod === 'DELIVER' && {
         deliveryDetails: {
