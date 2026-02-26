@@ -103,12 +103,12 @@ export default function Product() {
             </div>
             <p className="font-heading text-3xl font-bold" suppressHydrationWarning>
               {typeof window !== 'undefined' 
-                ? new Date(process.env.NEXT_PUBLIC_PREORDER_CLOSES || '2026-01-31').toLocaleDateString('en-US', {
+                ? new Date(process.env.NEXT_PUBLIC_PREORDER_CLOSES || '2026-03-01').toLocaleDateString('en-US', {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric'
                   })
-                : 'January 31, 2026'
+                : 'March 1, 2026'
               }
             </p>
             <p className="font-body text-sm text-white/80 mt-2">Limited time offer</p>
