@@ -168,8 +168,8 @@ export default function AdminPage() {
         throw new Error(data.error || data.details || `Failed to update status (${response.status})`);
       }
 
-      // Update local state
-      setOrders(orders.map(o => 
+      // Update local state using functional update to avoid stale closure
+      setOrders(prevOrders => prevOrders.map(o => 
         o.orderId === orderId 
           ? { ...o, deliveryStatus: status, updatedAt: new Date() }
           : o

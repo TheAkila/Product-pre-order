@@ -69,17 +69,20 @@ export async function POST(
     console.log(`✓ Order ${orderId} delivery status updated to ${deliveryStatus}`);
 
     // Send SMS to customer about delivery update
+    let smsResult = { success: false, message: 'Not attempted' };
     try {
-      const smsResult = await sendDeliveryUpdateSMS(phone, orderId, deliveryStatus);
+      console.log(`[SMS] Attempting to send delivery update to ${phone} for status ${deliveryStatus}`);
+      smsResult = await sendDeliveryUpdateSMS(phone, orderId, deliveryStatus);
 
       if (smsResult.success) {
         console.log(`✓ Delivery update SMS sent to ${phone} - Status: ${deliveryStatus}`);
       } else {
-        console.warn(`Delivery SMS failed: ${smsResult.message}`);
+        console.warn(`Delivery SMS failed: ${smsResult.message}`, smsResult);
         // Don't fail the update if SMS fails
       }
     } catch (smsError) {
       console.error('Error sending delivery SMS:', smsError);
+      smsResult = { success: false, message: smsError instanceof Error ? smsError.message : 'Unknown error' };
       // Continue - SMS failure shouldn't break the status update
     }
 
@@ -88,7 +91,8 @@ export async function POST(
       message: `Order marked as ${deliveryStatus}`,
       orderId,
       deliveryStatus,
-      smsNotification: 'Customer will receive an SMS update',
+      smsNotification: smsResult.success ? 'SMS sent successfully' : `SMS failed: ${smsResult.message}`,
+      smsDetails: smsResult,
     });
   } catch (error) {
     console.error('Error processing delivery update:', error);
