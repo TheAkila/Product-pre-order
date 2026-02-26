@@ -80,7 +80,7 @@ export default function SuccessPage() {
             Back to Home
           </Link>
           <p className="font-body text-xs sm:text-sm text-slate-500 mt-4 sm:mt-6 px-4">
-            Questions? Email us at <a href="mailto:support@liftingsocial.com" className="text-brand-red hover:underline">support@liftingsocial.com</a>
+            Questions? Email us at <a href="mailto:support@liftingsocial.com" className="text-brand-red hover:underline">theliftingsocial@gmail.com</a>
           </p>
         </div>
       </div>
