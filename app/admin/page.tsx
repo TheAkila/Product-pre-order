@@ -561,9 +561,9 @@ export default function AdminPage() {
                 className="appearance-none bg-slate-50 border-transparent rounded-xl pl-12 pr-10 py-3.5 text-brand-black font-body focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300 cursor-pointer min-w-[180px]"
               >
                 <option value="ALL">All Orders</option>
-                <option value="PAID">✅ Paid</option>
-                <option value="PENDING_PAYMENT">⏳ Pending</option>
-                <option value="CANCELLED">❌ Cancelled</option>
+                <option value="PAID">Paid</option>
+                <option value="PENDING_PAYMENT">Pending</option>
+                <option value="CANCELLED">Cancelled</option>
               </select>
             </div>
 
@@ -744,14 +744,14 @@ export default function AdminPage() {
                                 : 'bg-red-50 text-red-700 border-red-200'
                             }`}
                           >
-                            {order.paymentStatus === 'PAID' ? '✅ Paid' : order.paymentStatus === 'PENDING_PAYMENT' ? '⏳ Pending' : '❌ Cancelled'}
+                            {order.paymentStatus === 'PAID' ? 'Paid' : order.paymentStatus === 'PENDING_PAYMENT' ? 'Pending' : 'Cancelled'}
                           </span>
                         </td>
                         <td className="py-4 px-6">
                           <div className="text-sm">
                             {order.deliveryMethod === 'DELIVER' ? (
                               <div className="space-y-1">
-                                <p className="font-body font-semibold text-slate-900">🚚 Deliver</p>
+                                <p className="font-body font-semibold text-slate-900">Deliver</p>
                                 <div className="text-xs text-slate-500">
                                   <p>{order.deliveryDetails?.address}</p>
                                   <p>{order.deliveryDetails?.city}, {order.deliveryDetails?.postalCode}</p>
@@ -759,7 +759,7 @@ export default function AdminPage() {
                               </div>
                             ) : (
                               <div>
-                                <p className="font-body font-semibold text-slate-900">📍 Collect</p>
+                                <p className="font-body font-semibold text-slate-900">Collect</p>
                                 <p className="text-xs text-slate-500">At Point</p>
                               </div>
                             )}
@@ -767,8 +767,16 @@ export default function AdminPage() {
                         </td>
                         <td className="py-4 px-6 text-center">
                           {order.paymentStatus === 'PAID' ? (
-                            <span
-                              className={`inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full border ${
+                            <select
+                              value={order.deliveryStatus || 'PROCESSING'}
+                              onChange={(e) => {
+                                const newStatus = e.target.value as 'PROCESSING' | 'SHIPPED' | 'DELIVERED';
+                                if (confirm(`Update delivery status to ${newStatus}? Customer will receive an SMS notification.`)) {
+                                  updateDeliveryStatus(order.orderId, newStatus);
+                                }
+                              }}
+                              disabled={updatingStatusOrderId === order.orderId && isUpdatingStatus}
+                              className={`inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full border cursor-pointer transition-all hover:shadow-md disabled:opacity-50 disabled:cursor-wait ${
                                 order.deliveryStatus === 'DELIVERED'
                                   ? 'bg-green-50 text-green-700 border-green-200'
                                   : order.deliveryStatus === 'SHIPPED'
@@ -778,14 +786,13 @@ export default function AdminPage() {
                                   : 'bg-gray-50 text-gray-700 border-gray-200'
                               }`}
                             >
-                              {order.deliveryStatus === 'DELIVERED' ? '📦 Delivered' 
-                               : order.deliveryStatus === 'SHIPPED' ? '🚚 Shipped'
-                               : order.deliveryStatus === 'PROCESSING' ? '⏳ Processing' 
-                               : '📝 Pending'}
-                            </span>
+                              <option value="PROCESSING">Processing</option>
+                              <option value="SHIPPED">Shipped</option>
+                              <option value="DELIVERED">Delivered</option>
+                            </select>
                           ) : (
                             <span className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-gray-50 text-gray-500 border border-gray-200">
-                              —
+                              No Status
                             </span>
                           )}
                         </td>
@@ -806,20 +813,6 @@ export default function AdminPage() {
                         </td>
                         <td className="py-4 px-6 text-center">
                           <div className="flex items-center justify-center gap-2">
-                            {order.paymentStatus === 'PAID' && (
-                              <button
-                                onClick={() => {
-                                  setUpdatingStatusOrderId(order.orderId);
-                                  setSelectedStatus(order.deliveryStatus || 'PROCESSING' as 'PROCESSING' | 'SHIPPED' | 'DELIVERED');
-                                  setShowStatusModal(true);
-                                  setStatusUpdateError(null);
-                                }}
-                                className="inline-flex items-center justify-center p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all hover:scale-110"
-                                title="Update delivery status"
-                              >
-                                <Package size={18} strokeWidth={2} />
-                              </button>
-                            )}
                             <button
                               onClick={() => {
                                 setDeletingOrderId(order.orderId);
