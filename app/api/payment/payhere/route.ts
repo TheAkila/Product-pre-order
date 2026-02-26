@@ -126,7 +126,7 @@ export async function GET(request: NextRequest) {
             <input type="hidden" name="cancel_url" value="${baseUrl}/cancel">
             <input type="hidden" name="notify_url" value="${baseUrl}/api/payment/payhere/notify">
             <input type="hidden" name="order_id" value="${orderId}">
-            <input type="hidden" name="items" value="Lifting Social Limited Edition Tee">
+            <input type="hidden" name="items" value="Lifting Social Elite Gym Shaker">
             <input type="hidden" name="currency" value="LKR">
             <input type="hidden" name="amount" value="${amountFormatted}">
             <input type="hidden" name="first_name" value="${order.name.split(' ')[0] || 'Customer'}">
