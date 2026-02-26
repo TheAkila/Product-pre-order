@@ -255,8 +255,8 @@ export default function PrivacyPage() {
                     <Mail className="w-5 h-5 text-brand-red" />
                     <div>
                       <p className="font-body text-sm text-white">Email</p>
-                      <a href="mailto:privacy@liftingsocial.com" className="font-body text-xs text-slate-300 hover:text-white">
-                        theliftingsocial@gmail.com
+                      <a href="mailto:support@liftingsocial.com" className="font-body text-xs text-slate-300 hover:text-white">
+                        support@liftingsocial.com
                       </a>
                     </div>
                   </div>

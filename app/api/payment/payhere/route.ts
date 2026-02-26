@@ -130,7 +130,7 @@ export async function GET(request: NextRequest) {
             <input type="hidden" name="amount" value="${amountFormatted}">
             <input type="hidden" name="first_name" value="${order.name.split(' ')[0] || 'Customer'}">
             <input type="hidden" name="last_name" value="${order.name.split(' ').slice(1).join(' ') || ''}">
-            <input type="hidden" name="email" value="customer@liftingsocial.com">
+            <input type="hidden" name="email" value="${order.email || 'customer@liftingsocial.com'}">
             <input type="hidden" name="phone" value="${order.phone}">
             <input type="hidden" name="address" value="Sri Lanka">
             <input type="hidden" name="city" value="Colombo">

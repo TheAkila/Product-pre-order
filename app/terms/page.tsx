@@ -388,7 +388,7 @@ export default function TermsPage() {
                     <div>
                       <p className="font-body text-sm text-white">Email Support</p>
                       <a href="mailto:support@liftingsocial.com" className="font-body text-xs text-slate-300 hover:text-white">
-                        liftingsocial@gmail.com
+                        support@liftingsocial.com
                       </a>
                     </div>
                   </div>

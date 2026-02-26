@@ -8,6 +8,7 @@ import { Loader2, ShoppingBag, User, Phone, Ruler, Hash, Plus, Minus, Truck, Map
 export default function OrderForm() {
   const [formData, setFormData] = useState<OrderFormData>({
     name: '',
+    email: '',
     phone: '',
     quantity: 1,
     deliveryMethod: 'COLLECT',
@@ -37,6 +38,13 @@ export default function OrderForm() {
       // Validate form
       if (!formData.name.trim()) {
         throw new Error('Please enter your name');
+      }
+      if (!formData.email.trim()) {
+        throw new Error('Please enter your email address');
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        throw new Error('Please enter a valid email address');
       }
       if (!formData.phone.trim()) {
         throw new Error('Please enter your phone number');
@@ -137,6 +145,24 @@ export default function OrderForm() {
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="input-seamless w-full"
                 placeholder="+94 77 123 4567"
+                required
+                disabled={isSubmitting}
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="flex items-center gap-2 font-body text-sm font-medium text-slate-700 mb-2">
+                <User size={16} strokeWidth={2} />
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="input-seamless w-full"
+                placeholder="you@example.com"
                 required
                 disabled={isSubmitting}
               />

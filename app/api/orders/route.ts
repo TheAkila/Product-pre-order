@@ -38,6 +38,7 @@ export async function GET() {
       orders.push({
         orderId: doc.id,
         name: data.name,
+        email: data.email,
         phone: data.phone,
         quantity: data.quantity,
         amount: data.amount,
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest) {
     const body: OrderFormData = await request.json();
 
     // Validate input
-    if (!body.name || !body.phone || !body.quantity) {
+    if (!body.name || !body.email || !body.phone || !body.quantity) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -118,6 +119,7 @@ export async function POST(request: NextRequest) {
     const ordersRef = collection(db, 'orders');
     const orderData = {
       name: body.name.trim(),
+      email: body.email.trim(),
       phone: body.phone.trim(),
       quantity: body.quantity,
       amount,
