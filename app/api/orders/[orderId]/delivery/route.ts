@@ -14,30 +14,39 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ orderId: string }> }
 ) {
+  let orderId = 'unknown';
   try {
-    const { orderId } = await params;
+    const resolvedParams = await params;
+    orderId = resolvedParams.orderId;
+    console.log(`[Delivery API] Processing request for order: ${orderId}`);
+    
     const body = await request.json();
     const { deliveryStatus, adminPassword } = body;
+    console.log(`[Delivery API] Request body - status: ${deliveryStatus}, password provided: ${!!adminPassword}`);
 
     // Verify admin password
     const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+    console.log(`[Delivery API] Password check - correct password exists: ${!!correctPassword}, match: ${adminPassword === correctPassword}`);
+    
     if (!correctPassword || adminPassword !== correctPassword) {
-      console.warn(`Unauthorized delivery update attempt for order ${orderId}`);
+      console.warn(`[Delivery API] Unauthorized attempt for order ${orderId}`);
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Unauthorized', details: 'Invalid admin password' },
         { status: 401 }
       );
     }
 
     if (!deliveryStatus || !['PROCESSING', 'SHIPPED', 'DELIVERED'].includes(deliveryStatus)) {
+      console.warn(`[Delivery API] Invalid status: ${deliveryStatus}`);
       return NextResponse.json(
-        { error: 'Invalid delivery status' },
+        { error: 'Invalid delivery status', details: `Received: ${deliveryStatus}` },
         { status: 400 }
       );
     }
 
     // Check Firebase connection
     const firebaseStatus = getFirebaseStatus();
+    console.log(`[Delivery API] Firebase status:`, firebaseStatus);
     if (!firebaseStatus.isInitialized || !db) {
       return NextResponse.json(
         { error: 'Database connection failed' },
@@ -95,9 +104,10 @@ export async function POST(
       smsDetails: smsResult,
     });
   } catch (error) {
-    console.error('Error processing delivery update:', error);
+    console.error(`[Delivery API] Error for order ${orderId}:`, error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to update delivery status' },
+      { error: 'Failed to update delivery status', details: errorMessage },
       { status: 500 }
     );
   }

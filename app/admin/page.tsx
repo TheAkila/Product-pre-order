@@ -165,7 +165,7 @@ export default function AdminPage() {
       }
 
       if (!response.ok || data.error) {
-        throw new Error(data.error || data.details || `Failed to update status (${response.status})`);
+        throw new Error(data.details || data.error || `Failed to update status (${response.status})`);
       }
 
       // Update local state using functional update to avoid stale closure
