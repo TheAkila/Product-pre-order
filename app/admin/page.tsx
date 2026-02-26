@@ -235,15 +235,17 @@ export default function AdminPage() {
       ? orders 
       : orders.filter(order => order.paymentStatus === filter);
 
-    const headers = ['Order ID', 'Name', 'Phone', 'Quantity', 'Amount', 'Payment Status', 'Delivery Method', 'Delivery Address', 'Delivery City', 'Delivery Postal Code', 'Created At'];
+    const headers = ['Order ID', 'Name', 'Email', 'Phone', 'Quantity', 'Amount', 'Payment Status', 'Delivery Method', 'Delivery Status', 'Delivery Address', 'Delivery City', 'Delivery Postal Code', 'Created At'];
     const rows = filteredOrders.map(order => [
       order.orderId,
       order.name,
+      order.email,
       order.phone,
       order.quantity,
       order.amount,
       order.paymentStatus,
       order.deliveryMethod,
+      order.deliveryStatus || 'Pending',
       order.deliveryMethod === 'DELIVER' ? (order.deliveryDetails?.address || '') : 'N/A',
       order.deliveryMethod === 'DELIVER' ? (order.deliveryDetails?.city || '') : 'N/A',
       order.deliveryMethod === 'DELIVER' ? (order.deliveryDetails?.postalCode || '') : 'N/A',
@@ -672,6 +674,9 @@ export default function AdminPage() {
                         <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Customer</span>
                       </th>
                       <th className="py-4 px-6 text-left">
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Email</span>
+                      </th>
+                      <th className="py-4 px-6 text-left">
                         <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Contact</span>
                       </th>
                       <th className="py-4 px-6 text-center">
@@ -712,6 +717,9 @@ export default function AdminPage() {
                           <div>
                             <p className="font-body font-semibold text-brand-black">{order.name}</p>
                           </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <p className="font-body text-sm text-slate-600">{order.email}</p>
                         </td>
                         <td className="py-4 px-6">
                           <p className="font-body text-slate-600">{order.phone}</p>
@@ -756,6 +764,30 @@ export default function AdminPage() {
                               </div>
                             )}
                           </div>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          {order.paymentStatus === 'PAID' ? (
+                            <span
+                              className={`inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full border ${
+                                order.deliveryStatus === 'DELIVERED'
+                                  ? 'bg-green-50 text-green-700 border-green-200'
+                                  : order.deliveryStatus === 'SHIPPED'
+                                  ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                  : order.deliveryStatus === 'PROCESSING'
+                                  ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                                  : 'bg-gray-50 text-gray-700 border-gray-200'
+                              }`}
+                            >
+                              {order.deliveryStatus === 'DELIVERED' ? '📦 Delivered' 
+                               : order.deliveryStatus === 'SHIPPED' ? '🚚 Shipped'
+                               : order.deliveryStatus === 'PROCESSING' ? '⏳ Processing' 
+                               : '📝 Pending'}
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-gray-50 text-gray-500 border border-gray-200">
+                              —
+                            </span>
+                          )}
                         </td>
                         <td className="py-4 px-6 text-right">
                           <p className="font-body text-sm text-slate-500" suppressHydrationWarning>
