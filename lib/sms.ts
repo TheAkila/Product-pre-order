@@ -164,7 +164,7 @@ export async function sendPaymentConfirmationSMS(
 ): Promise<SMSResponse> {
   const senderId = process.env.TEXTLK_SENDER_ID || 'LiftSocial';
 
-  const message = `Payment Confirmed! Hi ${customerName}, we received your payment of LKR ${amount} for order #${orderId.slice(-8)}. Thank you!`;
+  const message = `Payment Confirmed! Hi ${customerName}, we received your Lifting Social payment of LKR ${amount} for order #${orderId.slice(-8)}. Thank you!`;
 
   console.log(`[SMS] Payment Confirmation - Order: ${orderId}, Amount: LKR ${amount}`);
 
@@ -192,7 +192,7 @@ export async function sendAdminOrderNotificationSMS(
     };
   }
 
-  const message = `New Order! #${orderId.slice(-8)} from ${customerName} - LKR ${amount}. Phone: ${phone}`;
+  const message = `New Lifting Social Order! #${orderId.slice(-8)} from ${customerName} - LKR ${amount}. Phone: ${phone}`;
 
   console.log(`[SMS] Admin Notification - Order: ${orderId}, Amount: LKR ${amount}`);
 
@@ -217,7 +217,7 @@ export async function sendDeliveryUpdateSMS(
       message = `Your Lifting Social order #${orderId.slice(-8)} is being prepared. Estimated delivery: 2-3 days.`;
       break;
     case 'SHIPPED':
-      message = `Your order #${orderId.slice(-8)} has been shipped! Track your delivery via SMS updates.`;
+      message = `Your Lifting Social order #${orderId.slice(-8)} has been shipped! Track your delivery via SMS updates.`;
       break;
     case 'DELIVERED':
       message = `Your Lifting Social Elite Gym Shaker has been delivered! Enjoy your gear. Thank you for your order!`;
