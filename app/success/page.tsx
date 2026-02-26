@@ -27,7 +27,7 @@ export default function SuccessPage() {
         {/* Success Message */}
         <div className="bg-white rounded-2xl sm:rounded-3xl border-2 border-green-500/20 p-6 sm:p-8 md:p-12 mb-6 sm:mb-8">
           <p className="font-body text-base sm:text-lg text-brand-black mb-4">
-            Thank you for supporting Lifting Social! 🎉
+            Thank you for supporting Lifting Social! 
           </p>
           <p className="font-body text-sm sm:text-base text-slate-600 mb-3 sm:mb-4">
             You&apos;ll receive a confirmation message on your phone shortly.
@@ -80,7 +80,7 @@ export default function SuccessPage() {
             Back to Home
           </Link>
           <p className="font-body text-xs sm:text-sm text-slate-500 mt-4 sm:mt-6 px-4">
-            Questions? Email us at <a href="mailto:support@liftingsocial.com" className="text-brand-red hover:underline">support@liftingsocial.com</a>
+            Questions? Email us at <a href="mailto:theliftingsocial@gmail.com" className="text-brand-red hover:underline">theliftingsocial@gmail.com</a>
           </p>
         </div>
       </div>
