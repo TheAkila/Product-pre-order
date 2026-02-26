@@ -266,7 +266,7 @@ export async function sendOrderConfirmationSMS(
   orderId: string,
   customerName: string
 ): Promise<SMSResponse> {
-  const senderId = process.env.TEXTLK_SENDER_ID || 'Lifting S';
+  const senderId = process.env.TEXTLK_SENDER_ID || 'LiftSocial';
 
   const message = `Order Confirmed! Hi ${customerName}, your Lifting Social order #${orderId.slice(-8)} is confirmed. We'll notify you when it ships. Thanks!`;
 
@@ -284,7 +284,7 @@ export async function sendPaymentConfirmationSMS(
   customerName: string,
   amount: number
 ): Promise<SMSResponse> {
-  const senderId = process.env.TEXTLK_SENDER_ID || 'Lifting S';
+  const senderId = process.env.TEXTLK_SENDER_ID || 'LiftSocial';
 
   const message = `Payment Confirmed! Hi ${customerName}, we received your payment of LKR ${amount} for order #${orderId.slice(-8)}. Thank you!`;
 
@@ -302,7 +302,7 @@ export async function sendAdminOrderNotificationSMS(
   phone: string,
   amount: number
 ): Promise<SMSResponse> {
-  const senderId = process.env.TEXTLK_SENDER_ID || 'Lifting S';
+  const senderId = process.env.TEXTLK_SENDER_ID || 'LiftSocial';
   const adminPhone = process.env.TEXTLK_ADMIN_PHONE;
 
   if (!adminPhone) {
@@ -328,7 +328,7 @@ export async function sendDeliveryUpdateSMS(
   orderId: string,
   status: string
 ): Promise<SMSResponse> {
-  const senderId = process.env.TEXTLK_SENDER_ID || 'Lifting S';
+  const senderId = process.env.TEXTLK_SENDER_ID || 'LiftSocial';
 
   let message = '';
 
