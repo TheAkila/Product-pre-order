@@ -36,7 +36,7 @@ export default function Footer() {
                 <span className="break-all">liftingsocial@gmail.com</span>
               </a>
               <a 
-                href="https://instagram.com/liftingsocial" 
+                href="https://instagram.com/theliftingsocial" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center sm:justify-start gap-2 font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 touch-manipulation"
