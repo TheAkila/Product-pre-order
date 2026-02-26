@@ -60,13 +60,14 @@ export async function GET(request: NextRequest) {
 
     // Generate PayHere hash
     // Format: merchant_id + order_id + amount + currency + md5(merchant_secret)
+    // IMPORTANT: amount MUST be formatted to exactly 2 decimal places as a string
     const hashedSecret = crypto
       .createHash('md5')
       .update(merchantSecret)
       .digest('hex')
       .toUpperCase();
 
-    const amountFormatted = parseFloat(order.amount.toFixed(2));
+    const amountFormatted = Number(order.amount).toFixed(2);
     const hashString = `${merchantId}${orderId}${amountFormatted}LKR${hashedSecret}`;
     const hash = crypto
       .createHash('md5')
