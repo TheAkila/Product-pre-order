@@ -7,13 +7,8 @@ export default function SuccessPage() {
     <main className="min-h-screen flex items-center justify-center px-4 py-12 sm:py-20 bg-gradient-to-br from-slate-50 via-white to-slate-50">
       <div className="max-w-3xl mx-auto w-full">
         {/* Success Icon */}
-        <div className="flex justify-center mb-6 sm:mb-8">
-          <div className="relative">
-            <div className="absolute inset-0 bg-brand-red/20 rounded-full animate-ping scale-125"></div>
-            <div className="relative">
-              <Logo size="lg" className="opacity-100" />
-            </div>
-          </div>
+        <div className="flex justify-center mb-8 sm:mb-10">
+          <Logo size="lg" className="opacity-100 scale-75 sm:scale-100" />
         </div>
 
         {/* Title */}
