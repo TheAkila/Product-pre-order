@@ -19,9 +19,17 @@ service cloud.firestore {
       // In production, add authentication check
       allow read: if true;
       
-      // Prevent updates from client
-      // Updates should only come from server-side (PayHere IPN)
-      allow update: if false;
+      // Allow updates for PayHere payment status changes and delivery status updates
+      // PayHere IPN and admin delivery updates
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['paymentStatus', 'paymentId', 'updatedAt', 'deliveryStatus'])
+            && (
+              // PayHere payment status updates
+              (request.resource.data.diff(resource.data).affectedKeys().hasAll(['paymentStatus', 'updatedAt']) &&
+               request.resource.data.paymentStatus in ['PAID', 'PENDING_PAYMENT', 'CANCELLED']) ||
+              // Admin delivery status updates
+              (request.resource.data.diff(resource.data).affectedKeys().hasAll(['deliveryStatus', 'updatedAt']) &&
+               request.resource.data.deliveryStatus in ['PROCESSING', 'SHIPPED', 'DELIVERED'])
+            );
       
       // Allow deletions from admin operations
       // In production, add proper authentication/authorization
