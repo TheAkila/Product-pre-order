@@ -42,7 +42,7 @@ export default function Footer() {
                 className="flex items-center justify-center sm:justify-start gap-2 font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 touch-manipulation"
               >
                 <Instagram size={16} strokeWidth={2} />
-                @liftingsocial
+                @theliftingsocial
               </a>
             </div>
           </div>
