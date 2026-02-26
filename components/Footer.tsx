@@ -1,4 +1,4 @@
-import { Mail, Instagram } from 'lucide-react';
+import { Mail, Instagram, Facebook } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -43,6 +43,15 @@ export default function Footer() {
               >
                 <Instagram size={16} strokeWidth={2} />
                 @theliftingsocial
+              </a>
+              <a 
+                href="https://facebook.com/liftingsocial" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center sm:justify-start gap-2 font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 touch-manipulation"
+              >
+                <Facebook size={16} strokeWidth={2} />
+                Lifting Social
               </a>
             </div>
           </div>
