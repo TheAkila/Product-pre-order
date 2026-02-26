@@ -18,10 +18,10 @@ export default function Product() {
         </div>
 
         {/* Product Grid */}
-        <div className="grid gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-10 md:mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-10 md:mb-12 max-w-5xl mx-auto">
           {/* Front View Card */}
           <div className="group bg-slate-50 rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden card-hover">
-            <div className="aspect-[4/5] bg-slate-100 relative overflow-hidden">
+            <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden">
               <Image 
                 src="/images/Front.png" 
                 alt="Lifting Social Elite Gym Shaker Front View"
@@ -32,14 +32,14 @@ export default function Product() {
               />
             </div>
             <div className="p-4 sm:p-5 md:p-6 bg-white">
-              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Premium Shaker Design</p>
-              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">make yours</p>
+              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Front View</p>
+              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">Premium Shaker Design</p>
             </div>
           </div>
 
           {/* Back View Card */}
           <div className="group bg-slate-50 rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden card-hover">
-            <div className="aspect-[4/5] bg-slate-100 relative overflow-hidden">
+            <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden">
               <Image 
                 src="/images/Back.png" 
                 alt="Lifting Social Elite Gym Shaker Back View - Premium Design"
@@ -49,8 +49,8 @@ export default function Product() {
               />
             </div>
             <div className="p-4 sm:p-5 md:p-6 bg-white">
-              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Elite Design</p>
-              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">Pre order Today</p>
+              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">Back View</p>
+              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">Elite Design</p>
             </div>
           </div>
         </div>
