@@ -175,16 +175,16 @@ export default function AdminPage() {
           : o
       ));
 
-      setShowStatusModal(false);
       setUpdatingStatusOrderId(null);
-      setSelectedStatus('PROCESSING');
       console.log('Delivery status updated successfully');
     } catch (err) {
       console.error('Update delivery status error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to update delivery status';
       setStatusUpdateError(errorMessage);
+      alert(`Failed to update delivery status: ${errorMessage}`);
     } finally {
       setIsUpdatingStatus(false);
+      setUpdatingStatusOrderId(null);
     }
   };
 
@@ -769,10 +769,12 @@ export default function AdminPage() {
                           {order.paymentStatus === 'PAID' ? (
                             <select
                               value={order.deliveryStatus || 'PROCESSING'}
-                              onChange={(e) => {
+                              onChange={async (e) => {
                                 const newStatus = e.target.value as 'PROCESSING' | 'SHIPPED' | 'DELIVERED';
+                                if (newStatus === (order.deliveryStatus || 'PROCESSING')) return;
                                 if (confirm(`Update delivery status to ${newStatus}? Customer will receive an SMS notification.`)) {
-                                  updateDeliveryStatus(order.orderId, newStatus);
+                                  setUpdatingStatusOrderId(order.orderId);
+                                  await updateDeliveryStatus(order.orderId, newStatus);
                                 }
                               }}
                               disabled={updatingStatusOrderId === order.orderId && isUpdatingStatus}
