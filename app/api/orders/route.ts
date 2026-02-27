@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { collection, addDoc, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
 import { db, getFirebaseStatus } from '@/lib/firebase';
 import { Order, OrderFormData } from '@/types/order';
-import { sendOrderConfirmationSMS, sendAdminOrderNotificationSMS } from '@/lib/sms';
 
 // GET /api/orders - Fetch all orders
 export async function GET() {
@@ -141,17 +140,10 @@ export async function POST(request: NextRequest) {
 
     const docRef = await addDoc(ordersRef, orderData);
 
-    console.log(`✓ Order created successfully: ${docRef.id}`);
+    console.log(`✓ Order created successfully: ${docRef.id} - awaiting payment`);
 
-    // Send SMS notifications (non-blocking)
-    try {
-      await Promise.all([
-        sendOrderConfirmationSMS(body.phone.trim(), docRef.id, body.name.trim()),
-        sendAdminOrderNotificationSMS(docRef.id, body.name.trim(), body.phone.trim(), amount),
-      ]);
-    } catch (smsError) {
-      console.error('SMS notification failed (order still created):', smsError);
-    }
+    // Note: SMS notifications are sent AFTER payment is confirmed (in PayHere notify callback)
+    // Do NOT send confirmation SMS here as customer hasn't paid yet
 
     return NextResponse.json({
       orderId: docRef.id,
