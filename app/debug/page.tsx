@@ -21,8 +21,6 @@ export default function DebugPage() {
     PAYHERE_MODE: process.env.NEXT_PUBLIC_PAYHERE_MODE || 'Not set',
     ADMIN_PASSWORD: process.env.NEXT_PUBLIC_ADMIN_PASSWORD ? '✓ Set' : '✗ Missing',
     BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'Not set',
-    PRODUCT_PRICE: process.env.NEXT_PUBLIC_PRODUCT_PRICE || 'Not set',
-    PREORDER_CLOSES: process.env.NEXT_PUBLIC_PREORDER_CLOSES || 'Not set',
   };
 
   const testApiEndpoint = async () => {

@@ -3,10 +3,14 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { OrderFormData, DeliveryMethod } from '@/types/order';
+import { Product } from '@/types/product';
 import { Loader2, ShoppingBag, User, Phone, Ruler, Hash, Plus, Minus, Truck, MapPin } from 'lucide-react';
 
-export default function OrderForm() {
+export default function OrderForm({ product }: { product: Product }) {
   const [formData, setFormData] = useState<OrderFormData>({
+    productId: product.id,
+    productName: product.name,
+    unitPrice: product.preorderPrice,
     name: '',
     email: '',
     phone: '',
@@ -24,8 +28,8 @@ export default function OrderForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const productPrice = parseInt(process.env.NEXT_PUBLIC_PRODUCT_PRICE || '2500');
-  const deliveryFee = formData.deliveryMethod === 'DELIVER' ? 200 : 0;
+  const productPrice = product.preorderPrice;
+  const deliveryFee = formData.deliveryMethod === 'DELIVER' ? product.deliveryFee : 0;
   const subtotal = productPrice * formData.quantity;
   const totalAmount = subtotal + deliveryFee;
 
@@ -92,16 +96,16 @@ export default function OrderForm() {
   };
 
   return (
-    <section id="order-form" className="py-12 sm:py-16 md:py-20 bg-white">
+    <section id={`order-form-${product.id}`} className="py-12 sm:py-16 md:py-20 bg-white">
       <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          
+
           <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-brand-black mb-2 sm:mb-3 md:mb-4 px-2">
             Reserve Yours
           </h2>
           <p className="font-body text-sm sm:text-base md:text-lg text-slate-600 max-w-xl mx-auto px-3 sm:px-4 leading-relaxed">
-            Complete the form below to secure your elite gym shaker. Fast, secure, and simple.
+            Complete the form below to secure your {product.name}. Fast, secure, and simple.
           </p>
         </div>
 
@@ -453,7 +457,7 @@ export default function OrderForm() {
               ) : (
                 <>
                   <ShoppingBag size={20} strokeWidth={2.5} />
-                  Pay & Reserve Your Shaker
+                  Pay & Reserve Your {product.name}
                 </>
               )}
             </button>

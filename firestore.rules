@@ -26,5 +26,16 @@ service cloud.firestore {
       // Allow deletions from admin operations
       allow delete: if true;
     }
+
+    // Products collection - the catalog shown on the homepage
+    match /products/{productId} {
+      // Public read (homepage + admin dashboard)
+      allow read: if true;
+
+      // Admin write access is gated by NEXT_PUBLIC_ADMIN_PASSWORD in the API
+      // routes (app/api/products), not by these rules - same pattern as
+      // the orders collection above, since this project has no Firebase Auth.
+      allow write: if true;
+    }
   }
 }

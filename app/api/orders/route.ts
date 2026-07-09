@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { collection, addDoc, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, getDoc, query, orderBy, Timestamp } from 'firebase/firestore';
 import { db, getFirebaseStatus } from '@/lib/firebase';
 import { Order, OrderFormData } from '@/types/order';
 
@@ -37,6 +37,9 @@ export async function GET() {
       console.log('Processing document:', doc.id, data);
       orders.push({
         orderId: doc.id,
+        productId: data.productId,
+        productName: data.productName,
+        unitPrice: data.unitPrice,
         name: data.name,
         email: data.email,
         phone: data.phone,
@@ -78,7 +81,7 @@ export async function POST(request: NextRequest) {
     const body: OrderFormData = await request.json();
 
     // Validate input
-    if (!body.name || !body.email || !body.phone || !body.quantity) {
+    if (!body.productId || !body.name || !body.email || !body.phone || !body.quantity) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -91,11 +94,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    // Calculate amount
-    const productPrice = parseInt(process.env.NEXT_PUBLIC_PRODUCT_PRICE || '2500');
-    const deliveryFee = body.deliveryMethod === 'DELIVER' ? 200 : 0;
-    const amount = (productPrice * body.quantity) + deliveryFee;
 
     // Validate delivery details if delivery method is DELIVER
     if (body.deliveryMethod === 'DELIVER') {
@@ -116,9 +114,27 @@ export async function POST(request: NextRequest) {
         details: firebaseStatus.error || 'Firebase not initialized'
       }, { status: 500 });
     }
-    
+
+    // Look up the product server-side - never trust a client-submitted price
+    const productRef = doc(db, 'products', body.productId);
+    const productSnap = await getDoc(productRef);
+    if (!productSnap.exists() || productSnap.data().active === false) {
+      return NextResponse.json(
+        { error: 'Product not available' },
+        { status: 400 }
+      );
+    }
+    const product = productSnap.data();
+
+    // Calculate amount from the authoritative product record
+    const deliveryFee = body.deliveryMethod === 'DELIVER' ? (product.deliveryFee ?? 0) : 0;
+    const amount = (product.preorderPrice * body.quantity) + deliveryFee;
+
     const ordersRef = collection(db, 'orders');
     const orderData = {
+      productId: body.productId,
+      productName: product.name,
+      unitPrice: product.preorderPrice,
       name: body.name.trim(),
       email: body.email.trim(),
       phone: body.phone.trim(),

@@ -9,6 +9,9 @@ export interface DeliveryDetails {
 
 export interface Order {
   orderId: string;
+  productId: string;
+  productName: string;
+  unitPrice: number;
   name: string;
   email: string;
   phone: string;
@@ -26,6 +29,9 @@ export interface Order {
 export type PaymentStatus = 'PENDING_PAYMENT' | 'PAID' | 'CANCELLED';
 
 export interface OrderFormData {
+  productId: string;
+  productName: string;
+  unitPrice: number;
   name: string;
   email: string;
   phone: string;

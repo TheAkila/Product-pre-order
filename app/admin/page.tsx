@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { Order, PaymentStatus } from '@/types/order';
-import { 
-  Download, 
-  Loader2, 
-  Lock, 
-  Search, 
-  LogOut, 
-  TrendingUp, 
-  Package, 
-  Users, 
+import { Product, ProductFormData } from '@/types/product';
+import {
+  Download,
+  Loader2,
+  Lock,
+  Search,
+  LogOut,
+  TrendingUp,
+  Package,
+  Users,
   CreditCard,
   RefreshCw,
   Filter,
@@ -18,12 +19,31 @@ import {
   Eye,
   Trash2,
   X,
-  AlertTriangle
+  AlertTriangle,
+  Plus,
+  Pencil,
+  ImagePlus,
+  Boxes,
+  ShoppingBag,
 } from 'lucide-react';
+
+const EMPTY_PRODUCT_FORM: ProductFormData = {
+  name: '',
+  description: '',
+  imageFront: '',
+  imageBack: '',
+  regularPrice: 0,
+  preorderPrice: 0,
+  deliveryFee: 200,
+  preorderCloses: '',
+  active: true,
+  sortOrder: 0,
+};
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
+  const [activeTab, setActiveTab] = useState<'orders' | 'products'>('orders');
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +59,20 @@ export default function AdminPage() {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [statusUpdateError, setStatusUpdateError] = useState<string | null>(null);
 
+  // Products state
+  const [products, setProducts] = useState<Product[]>([]);
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [productsError, setProductsError] = useState<string | null>(null);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [productForm, setProductForm] = useState<ProductFormData>(EMPTY_PRODUCT_FORM);
+  const [isSavingProduct, setIsSavingProduct] = useState(false);
+  const [productFormError, setProductFormError] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState<'front' | 'back' | null>(null);
+  const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
+  const [showDeleteProductConfirm, setShowDeleteProductConfirm] = useState(false);
+  const [isDeletingProduct, setIsDeletingProduct] = useState(false);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
@@ -52,6 +86,7 @@ export default function AdminPage() {
       setIsAuthenticated(true);
       setError(null);
       fetchOrders();
+      fetchProducts();
     } else {
       setError('Invalid password');
     }
@@ -230,18 +265,156 @@ export default function AdminPage() {
     }
   };
 
+  const fetchProducts = async () => {
+    setProductsLoading(true);
+    setProductsError(null);
+    try {
+      const response = await fetch('/api/products', { cache: 'no-store' });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.details || data.error || 'Failed to fetch products');
+      }
+      setProducts(data);
+    } catch (err) {
+      setProductsError(err instanceof Error ? err.message : 'Failed to fetch products');
+    } finally {
+      setProductsLoading(false);
+    }
+  };
+
+  const openAddProductModal = () => {
+    setEditingProductId(null);
+    setProductForm(EMPTY_PRODUCT_FORM);
+    setProductFormError(null);
+    setShowProductModal(true);
+  };
+
+  const openEditProductModal = (product: Product) => {
+    setEditingProductId(product.id);
+    setProductForm({
+      name: product.name,
+      description: product.description,
+      imageFront: product.imageFront,
+      imageBack: product.imageBack,
+      regularPrice: product.regularPrice,
+      preorderPrice: product.preorderPrice,
+      deliveryFee: product.deliveryFee,
+      preorderCloses: product.preorderCloses,
+      active: product.active,
+      sortOrder: product.sortOrder,
+    });
+    setProductFormError(null);
+    setShowProductModal(true);
+  };
+
+  const uploadProductImage = async (file: File, which: 'front' | 'back') => {
+    setUploadingImage(which);
+    setProductFormError(null);
+    try {
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+      const body = new FormData();
+      body.append('file', file);
+      body.append('adminPassword', adminPassword || '');
+
+      const response = await fetch('/api/products/upload', {
+        method: 'POST',
+        body,
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.details || data.error || 'Failed to upload image');
+      }
+
+      setProductForm((prev) => ({
+        ...prev,
+        ...(which === 'front' ? { imageFront: data.url } : { imageBack: data.url }),
+      }));
+    } catch (err) {
+      setProductFormError(err instanceof Error ? err.message : 'Failed to upload image');
+    } finally {
+      setUploadingImage(null);
+    }
+  };
+
+  const saveProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProductFormError(null);
+
+    if (!productForm.name.trim()) {
+      setProductFormError('Please enter a product name');
+      return;
+    }
+    if (!productForm.imageFront) {
+      setProductFormError('Please upload a front image');
+      return;
+    }
+    if (!productForm.preorderCloses) {
+      setProductFormError('Please set a pre-order closing date');
+      return;
+    }
+
+    setIsSavingProduct(true);
+    try {
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+      const url = editingProductId ? `/api/products/${editingProductId}` : '/api/products';
+      const method = editingProductId ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...productForm, adminPassword }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.details || data.error || 'Failed to save product');
+      }
+
+      setShowProductModal(false);
+      await fetchProducts();
+    } catch (err) {
+      setProductFormError(err instanceof Error ? err.message : 'Failed to save product');
+    } finally {
+      setIsSavingProduct(false);
+    }
+  };
+
+  const deleteProduct = async (productId: string) => {
+    setIsDeletingProduct(true);
+    try {
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+      const response = await fetch(`/api/products/${productId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminPassword }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.details || data.error || 'Failed to delete product');
+      }
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
+      setShowDeleteProductConfirm(false);
+      setDeletingProductId(null);
+    } catch (err) {
+      setProductsError(err instanceof Error ? err.message : 'Failed to delete product');
+    } finally {
+      setIsDeletingProduct(false);
+    }
+  };
+
   const exportToCSV = () => {
     const filteredOrders = filter === 'ALL' 
       ? orders 
       : orders.filter(order => order.paymentStatus === filter);
 
-    const headers = ['Order ID', 'Name', 'Email', 'Phone', 'Quantity', 'Amount', 'Payment Status', 'Delivery Method', 'Delivery Status', 'Delivery Address', 'Delivery City', 'Delivery Postal Code', 'Created At'];
+    const headers = ['Order ID', 'Product', 'Name', 'Email', 'Phone', 'Quantity', 'Unit Price', 'Amount', 'Payment Status', 'Delivery Method', 'Delivery Status', 'Delivery Address', 'Delivery City', 'Delivery Postal Code', 'Created At'];
     const rows = filteredOrders.map(order => [
       order.orderId,
+      order.productName || 'N/A',
       order.name,
       order.email,
       order.phone,
       order.quantity,
+      order.unitPrice ?? '',
       order.amount,
       order.paymentStatus,
       order.deliveryMethod,
@@ -412,6 +585,30 @@ export default function AdminPage() {
           </div>
         </div>
 
+        {/* Tab Switcher */}
+        <div className="flex gap-2 bg-white rounded-2xl p-2 shadow-lg border border-slate-200 w-fit">
+          <button
+            onClick={() => setActiveTab('orders')}
+            className={`px-5 py-2.5 rounded-xl font-heading font-bold text-sm flex items-center gap-2 transition-all ${
+              activeTab === 'orders' ? 'bg-brand-black text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <ShoppingBag size={16} strokeWidth={2} />
+            Orders
+          </button>
+          <button
+            onClick={() => setActiveTab('products')}
+            className={`px-5 py-2.5 rounded-xl font-heading font-bold text-sm flex items-center gap-2 transition-all ${
+              activeTab === 'products' ? 'bg-brand-black text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <Boxes size={16} strokeWidth={2} />
+            Products
+          </button>
+        </div>
+
+        {activeTab === 'orders' && (
+        <>
         {/* KPI Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 hover:border-brand-red/20">
@@ -685,6 +882,14 @@ export default function AdminPage() {
                       </div>
                     </div>
 
+                    {/* Row 1.5: Product */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <ShoppingBag size={14} className="text-brand-red shrink-0" strokeWidth={2} />
+                      <p className="font-body text-sm font-semibold text-brand-black truncate">
+                        {order.productName || 'Unknown product'}
+                      </p>
+                    </div>
+
                     {/* Row 2: Name + Amount */}
                     <div className="flex items-start justify-between mb-2">
                       <div>
@@ -694,7 +899,7 @@ export default function AdminPage() {
                       </div>
                       <div className="text-right">
                         <p className="font-body font-bold text-brand-black">LKR {order.amount.toLocaleString()}</p>
-                        <p className="font-body text-xs text-slate-500">Qty: {order.quantity}</p>
+                        <p className="font-body text-xs text-slate-500">Qty: {order.quantity} {order.unitPrice ? `× LKR ${order.unitPrice.toLocaleString()}` : ''}</p>
                       </div>
                     </div>
 
@@ -756,6 +961,9 @@ export default function AdminPage() {
                         <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Order ID</span>
                       </th>
                       <th className="py-4 px-6 text-left">
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Product</span>
+                      </th>
+                      <th className="py-4 px-6 text-left">
                         <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Customer</span>
                       </th>
                       <th className="py-4 px-6 text-left">
@@ -796,6 +1004,17 @@ export default function AdminPage() {
                             <code className="text-xs bg-slate-100 group-hover:bg-slate-200 px-3 py-1.5 rounded-lg text-slate-700 font-mono transition-colors">
                               {order.orderId.slice(0, 8)}
                             </code>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="flex items-center gap-2">
+                            <ShoppingBag size={14} className="text-brand-red shrink-0" strokeWidth={2} />
+                            <div>
+                              <p className="font-body font-semibold text-brand-black">{order.productName || 'Unknown product'}</p>
+                              {order.unitPrice != null && (
+                                <p className="font-body text-xs text-slate-500">LKR {order.unitPrice.toLocaleString()} / unit</p>
+                              )}
+                            </div>
                           </div>
                         </td>
                         <td className="py-4 px-6">
@@ -1001,6 +1220,310 @@ export default function AdminPage() {
                       Delete
                     </>
                   )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        </>
+        )}
+
+        {activeTab === 'products' && (
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div>
+              <h2 className="font-heading text-xl font-bold text-brand-black mb-2">Products</h2>
+              <p className="font-body text-sm text-slate-600">Manage the items shown for pre-order on the homepage</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={fetchProducts}
+                disabled={productsLoading}
+                className="bg-slate-100 text-brand-black px-4 py-3 font-heading font-bold rounded-xl hover:bg-slate-200 transition-all flex items-center gap-2 disabled:opacity-50"
+              >
+                <RefreshCw size={16} className={productsLoading ? 'animate-spin' : ''} strokeWidth={2} />
+              </button>
+              <button
+                onClick={openAddProductModal}
+                className="bg-gradient-to-r from-brand-red to-red-700 text-white px-5 py-3 font-heading font-bold rounded-xl hover:from-red-700 hover:to-red-800 transition-all flex items-center gap-2 shadow-lg"
+              >
+                <Plus size={18} strokeWidth={2} />
+                Add Product
+              </button>
+            </div>
+          </div>
+
+          {productsError && (
+            <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+              <p className="font-body text-sm text-red-700">{productsError}</p>
+            </div>
+          )}
+
+          {productsLoading ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <Loader2 className="animate-spin text-brand-red mb-4" size={32} strokeWidth={2} />
+              <p className="font-body text-sm text-slate-500">Loading products...</p>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <Boxes size={32} className="text-slate-400 mb-4" strokeWidth={2} />
+              <p className="font-heading text-lg font-medium text-slate-600 mb-2">No products yet</p>
+              <p className="font-body text-sm text-slate-500 mb-4">Add your first product to start taking pre-orders</p>
+              <button
+                onClick={openAddProductModal}
+                className="bg-brand-red text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors"
+              >
+                Add Product
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {products.map((product) => (
+                <div key={product.id} className="border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+                  <div className="aspect-video bg-slate-100 relative">
+                    {product.imageFront ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={product.imageFront} alt={product.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-400">
+                        <ImagePlus size={28} />
+                      </div>
+                    )}
+                    <span
+                      className={`absolute top-2 right-2 px-2.5 py-1 text-xs font-semibold rounded-full border ${
+                        product.active
+                          ? 'bg-green-50 text-green-700 border-green-200'
+                          : 'bg-gray-50 text-gray-500 border-gray-200'
+                      }`}
+                    >
+                      {product.active ? 'Active' : 'Hidden'}
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <p className="font-body font-bold text-brand-black truncate">{product.name}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <p className="font-body text-sm text-slate-400 line-through">LKR {product.regularPrice.toLocaleString()}</p>
+                      <p className="font-body text-sm font-bold text-brand-black">LKR {product.preorderPrice.toLocaleString()}</p>
+                    </div>
+                    <p className="font-body text-xs text-slate-500 mt-1">
+                      Closes {product.preorderCloses ? new Date(product.preorderCloses).toLocaleDateString() : '—'}
+                    </p>
+                    <div className="flex gap-2 mt-4">
+                      <button
+                        onClick={() => openEditProductModal(product)}
+                        className="flex-1 bg-slate-100 text-brand-black px-3 py-2 rounded-lg font-semibold text-sm hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Pencil size={14} strokeWidth={2} />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => { setDeletingProductId(product.id); setShowDeleteProductConfirm(true); }}
+                        className="px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <Trash2 size={16} strokeWidth={2} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        )}
+
+        {/* Product Add/Edit Modal */}
+        {showProductModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+            <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 sm:p-8 my-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-heading text-xl font-bold text-brand-black">
+                  {editingProductId ? 'Edit Product' : 'Add Product'}
+                </h2>
+                <button onClick={() => setShowProductModal(false)} className="text-slate-400 hover:text-slate-600">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <form onSubmit={saveProduct} className="space-y-4">
+                {productFormError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <p className="font-body text-xs text-red-700">{productFormError}</p>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block font-body text-sm font-medium text-slate-700 mb-1">Product Name</label>
+                  <input
+                    type="text"
+                    value={productForm.name}
+                    onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                    className="w-full bg-slate-50 border-transparent rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-red"
+                    placeholder="Elite Gym Shaker"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-body text-sm font-medium text-slate-700 mb-1">Description</label>
+                  <textarea
+                    value={productForm.description}
+                    onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                    className="w-full bg-slate-50 border-transparent rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-red"
+                    placeholder="Premium shaker. Limited release."
+                    rows={2}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-body text-sm font-medium text-slate-700 mb-1">Front Image</label>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      onChange={(e) => e.target.files?.[0] && uploadProductImage(e.target.files[0], 'front')}
+                      className="w-full text-xs"
+                      disabled={uploadingImage === 'front'}
+                    />
+                    {uploadingImage === 'front' && <p className="text-xs text-slate-500 mt-1">Uploading...</p>}
+                    {productForm.imageFront && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={productForm.imageFront} alt="Front preview" className="mt-2 h-20 w-full object-cover rounded-lg" />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block font-body text-sm font-medium text-slate-700 mb-1">Back Image</label>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      onChange={(e) => e.target.files?.[0] && uploadProductImage(e.target.files[0], 'back')}
+                      className="w-full text-xs"
+                      disabled={uploadingImage === 'back'}
+                    />
+                    {uploadingImage === 'back' && <p className="text-xs text-slate-500 mt-1">Uploading...</p>}
+                    {productForm.imageBack && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={productForm.imageBack} alt="Back preview" className="mt-2 h-20 w-full object-cover rounded-lg" />
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-body text-sm font-medium text-slate-700 mb-1">Regular Price (LKR)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={productForm.regularPrice}
+                      onChange={(e) => setProductForm({ ...productForm, regularPrice: Number(e.target.value) })}
+                      className="w-full bg-slate-50 border-transparent rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-red"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-body text-sm font-medium text-slate-700 mb-1">Pre-Order Price (LKR)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={productForm.preorderPrice}
+                      onChange={(e) => setProductForm({ ...productForm, preorderPrice: Number(e.target.value) })}
+                      className="w-full bg-slate-50 border-transparent rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-red"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-body text-sm font-medium text-slate-700 mb-1">Delivery Fee (LKR)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={productForm.deliveryFee}
+                      onChange={(e) => setProductForm({ ...productForm, deliveryFee: Number(e.target.value) })}
+                      className="w-full bg-slate-50 border-transparent rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-red"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-body text-sm font-medium text-slate-700 mb-1">Pre-Order Closes</label>
+                    <input
+                      type="date"
+                      value={productForm.preorderCloses}
+                      onChange={(e) => setProductForm({ ...productForm, preorderCloses: e.target.value })}
+                      className="w-full bg-slate-50 border-transparent rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-red"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 items-center">
+                  <div>
+                    <label className="block font-body text-sm font-medium text-slate-700 mb-1">Sort Order</label>
+                    <input
+                      type="number"
+                      value={productForm.sortOrder}
+                      onChange={(e) => setProductForm({ ...productForm, sortOrder: Number(e.target.value) })}
+                      className="w-full bg-slate-50 border-transparent rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-red"
+                    />
+                  </div>
+                  <label className="flex items-center gap-2 mt-6">
+                    <input
+                      type="checkbox"
+                      checked={productForm.active}
+                      onChange={(e) => setProductForm({ ...productForm, active: e.target.checked })}
+                      className="w-4 h-4 accent-brand-red"
+                    />
+                    <span className="font-body text-sm text-slate-700">Visible on homepage</span>
+                  </label>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowProductModal(false)}
+                    className="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSavingProduct || uploadingImage !== null}
+                    className="flex-1 px-4 py-2.5 bg-brand-red text-white font-semibold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isSavingProduct ? <Loader2 size={16} className="animate-spin" /> : null}
+                    {editingProductId ? 'Save Changes' : 'Add Product'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Product Delete Confirmation Modal */}
+        {showDeleteProductConfirm && deletingProductId && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8">
+              <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-6">
+                <AlertTriangle className="text-red-600" size={24} strokeWidth={2} />
+              </div>
+              <h2 className="font-heading text-xl font-bold text-brand-black text-center mb-2">Delete Product?</h2>
+              <p className="font-body text-xs text-slate-500 text-center mb-6">
+                This removes it from the homepage. Existing orders keep their own product name snapshot.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => { setShowDeleteProductConfirm(false); setDeletingProductId(null); }}
+                  disabled={isDeletingProduct}
+                  className="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => deleteProduct(deletingProductId)}
+                  disabled={isDeletingProduct}
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isDeletingProduct ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                  Delete
                 </button>
               </div>
             </div>

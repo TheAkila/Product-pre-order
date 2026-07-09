@@ -60,11 +60,11 @@ export default function Footer() {
           <div className="text-center sm:text-left">
             <h4 className="font-body text-xs sm:text-sm font-semibold text-slate-300 mb-3 sm:mb-4">QUICK LINKS</h4>
             <div className="space-y-2">
-              <a href="#product" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
+              <a href="#products" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
                 View Collection
               </a>
-             
-              <a href="#order-form" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
+
+              <a href="#products" className="block font-body text-xs sm:text-sm text-slate-400 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center justify-center sm:justify-start touch-manipulation">
                 Pre-Order Now
               </a>
             </div>

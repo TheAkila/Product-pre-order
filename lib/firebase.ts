@@ -1,5 +1,6 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getFirestore, Firestore } from 'firebase/firestore';
+import { getStorage, FirebaseStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -40,13 +41,14 @@ const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
 // Initialize Firebase with proper error handling
 let app: FirebaseApp | null = null;
 let db: Firestore | null = null;
+let storage: FirebaseStorage | null = null;
 let initError: Error | null = null;
 
 try {
   if (missingVars.length > 0) {
     const errorMsg = `Missing Firebase environment variables: ${missingVars.join(', ')}`;
     console.error(errorMsg);
-    
+
     if (!isBuildTime) {
       initError = new Error(errorMsg);
       console.warn('Firebase not initialized due to missing environment variables');
@@ -59,11 +61,13 @@ try {
       console.log('Initializing Firebase app...');
       app = initializeApp(firebaseConfig);
       db = getFirestore(app);
+      storage = getStorage(app);
       console.log('Firebase initialized successfully');
     } else {
       console.log('Using existing Firebase app...');
       app = getApps()[0];
       db = getFirestore(app);
+      storage = getStorage(app);
     }
   }
 } catch (error) {
@@ -77,7 +81,7 @@ try {
 }
 
 // Export with error checking function
-export { app, db };
+export { app, db, storage };
 
 export function getFirebaseStatus() {
   return {
