@@ -29,7 +29,7 @@ export default function ProductCard({ product }: { product: Product }) {
         )}
       </div>
       <div className="p-3 sm:p-5">
-        <h3 className="font-heading text-sm sm:text-lg font-bold text-brand-black mb-1 truncate">{product.name}</h3>
+        <h3 className="font-heading text-sm sm:text-lg font-bold text-brand-black mb-1 min-h-[2.25rem] sm:min-h-[3.5rem]">{product.name}</h3>
         <div className="flex items-baseline gap-1.5 sm:gap-2 mb-2 sm:mb-3">
           <span className="font-body text-[11px] sm:text-sm text-slate-400 line-through">
             LKR {product.regularPrice.toLocaleString()}
