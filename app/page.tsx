@@ -48,12 +48,29 @@ async function getActiveProducts(): Promise<Product[]> {
   }
 }
 
+async function getHeroSlideImages(): Promise<string[]> {
+  const firebaseStatus = getFirebaseStatus();
+  if (!firebaseStatus.isInitialized || !db) {
+    return [];
+  }
+
+  try {
+    const slidesRef = collection(db, 'heroSlides');
+    const q = query(slidesRef, orderBy('sortOrder', 'asc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => doc.data().imageUrl as string).filter(Boolean);
+  } catch (error) {
+    console.error('Error loading hero slides for homepage:', error);
+    return [];
+  }
+}
+
 export default async function Home() {
-  const products = await getActiveProducts();
+  const [products, heroImages] = await Promise.all([getActiveProducts(), getHeroSlideImages()]);
 
   return (
     <main className="min-h-screen">
-      <Hero />
+      <Hero images={heroImages} />
       <div id="products">
         {products.length > 0 ? (
           products.map((product) => <ProductSection key={product.id} product={product} />)

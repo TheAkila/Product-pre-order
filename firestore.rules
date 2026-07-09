@@ -37,5 +37,11 @@ service cloud.firestore {
       // the orders collection above, since this project has no Firebase Auth.
       allow write: if true;
     }
+
+    // Hero carousel slides - gated the same way as products
+    match /heroSlides/{slideId} {
+      allow read: if true;
+      allow write: if true;
+    }
   }
 }

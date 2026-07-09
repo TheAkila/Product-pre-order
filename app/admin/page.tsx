@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Order, PaymentStatus } from '@/types/order';
 import { Product, ProductFormData } from '@/types/product';
+import { HeroSlide } from '@/types/heroSlide';
 import {
   Download,
   Loader2,
@@ -43,7 +44,7 @@ const EMPTY_PRODUCT_FORM: ProductFormData = {
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState<'orders' | 'products'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'products' | 'hero'>('orders');
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +74,13 @@ export default function AdminPage() {
   const [showDeleteProductConfirm, setShowDeleteProductConfirm] = useState(false);
   const [isDeletingProduct, setIsDeletingProduct] = useState(false);
 
+  // Hero carousel state
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
+  const [heroSlidesLoading, setHeroSlidesLoading] = useState(false);
+  const [heroSlidesError, setHeroSlidesError] = useState<string | null>(null);
+  const [uploadingHeroSlide, setUploadingHeroSlide] = useState(false);
+  const [deletingSlideId, setDeletingSlideId] = useState<string | null>(null);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
@@ -87,6 +95,7 @@ export default function AdminPage() {
       setError(null);
       fetchOrders();
       fetchProducts();
+      fetchHeroSlides();
     } else {
       setError('Invalid password');
     }
@@ -398,6 +407,77 @@ export default function AdminPage() {
       setProductsError(err instanceof Error ? err.message : 'Failed to delete product');
     } finally {
       setIsDeletingProduct(false);
+    }
+  };
+
+  const fetchHeroSlides = async () => {
+    setHeroSlidesLoading(true);
+    setHeroSlidesError(null);
+    try {
+      const response = await fetch('/api/hero-slides', { cache: 'no-store' });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.details || data.error || 'Failed to fetch hero slides');
+      }
+      setHeroSlides(data);
+    } catch (err) {
+      setHeroSlidesError(err instanceof Error ? err.message : 'Failed to fetch hero slides');
+    } finally {
+      setHeroSlidesLoading(false);
+    }
+  };
+
+  const uploadHeroSlide = async (file: File) => {
+    setUploadingHeroSlide(true);
+    setHeroSlidesError(null);
+    try {
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+      const uploadBody = new FormData();
+      uploadBody.append('file', file);
+      uploadBody.append('adminPassword', adminPassword || '');
+
+      const uploadResponse = await fetch('/api/hero-slides/upload', { method: 'POST', body: uploadBody });
+      const uploadData = await uploadResponse.json();
+      if (!uploadResponse.ok) {
+        throw new Error(uploadData.details || uploadData.error || 'Failed to upload image');
+      }
+
+      const createResponse = await fetch('/api/hero-slides', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl: uploadData.url, adminPassword }),
+      });
+      const createData = await createResponse.json();
+      if (!createResponse.ok) {
+        throw new Error(createData.details || createData.error || 'Failed to save slide');
+      }
+
+      await fetchHeroSlides();
+    } catch (err) {
+      setHeroSlidesError(err instanceof Error ? err.message : 'Failed to add slide');
+    } finally {
+      setUploadingHeroSlide(false);
+    }
+  };
+
+  const deleteHeroSlide = async (slideId: string) => {
+    setDeletingSlideId(slideId);
+    try {
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+      const response = await fetch(`/api/hero-slides/${slideId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminPassword }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.details || data.error || 'Failed to delete slide');
+      }
+      setHeroSlides((prev) => prev.filter((s) => s.id !== slideId));
+    } catch (err) {
+      setHeroSlidesError(err instanceof Error ? err.message : 'Failed to delete slide');
+    } finally {
+      setDeletingSlideId(null);
     }
   };
 
