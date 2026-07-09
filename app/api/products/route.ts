@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { collection, addDoc, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
 import { db, getFirebaseStatus } from '@/lib/firebase';
-import { Product, ProductFormData } from '@/types/product';
+import { Product, ProductFormData, MAX_PRODUCT_IMAGES } from '@/types/product';
 
 // GET /api/products - Fetch all products (add ?activeOnly=true for public homepage use)
 export async function GET(request: NextRequest) {
@@ -31,8 +31,7 @@ export async function GET(request: NextRequest) {
         id: doc.id,
         name: data.name,
         description: data.description || '',
-        imageFront: data.imageFront,
-        imageBack: data.imageBack,
+        images: Array.isArray(data.images) ? data.images : [],
         regularPrice: data.regularPrice,
         preorderPrice: data.preorderPrice,
         deliveryFee: data.deliveryFee ?? 0,
@@ -64,7 +63,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized', details: 'Invalid admin password' }, { status: 401 });
     }
 
-    if (!body.name || !body.imageFront || body.preorderPrice == null || body.regularPrice == null) {
+    const images = Array.isArray(body.images) ? body.images.filter(Boolean).slice(0, MAX_PRODUCT_IMAGES) : [];
+
+    if (!body.name || images.length === 0 || body.preorderPrice == null || body.regularPrice == null) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -77,8 +78,7 @@ export async function POST(request: NextRequest) {
     const productData = {
       name: body.name.trim(),
       description: (body.description || '').trim(),
-      imageFront: body.imageFront,
-      imageBack: body.imageBack || body.imageFront,
+      images,
       regularPrice: Number(body.regularPrice),
       preorderPrice: Number(body.preorderPrice),
       deliveryFee: Number(body.deliveryFee) || 0,

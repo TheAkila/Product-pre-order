@@ -23,41 +23,24 @@ export default function Product({ product }: { product: ProductType }) {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-10 md:mb-12 max-w-5xl mx-auto">
-          {/* Front View Card */}
-          <div className="group bg-slate-50 rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden card-hover">
-            <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden">
-              <Image
-                src={product.imageFront}
-                alt={`${product.name} - Front View`}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-                priority
-              />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-10 md:mb-12 max-w-5xl mx-auto">
+          {product.images.map((imageUrl, index) => (
+            <div key={imageUrl} className="group bg-slate-50 rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden card-hover">
+              <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden">
+                <Image
+                  src={imageUrl}
+                  alt={`${product.name} - View ${index + 1}`}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                  priority={index === 0}
+                />
+              </div>
+              <div className="p-4 sm:p-5 md:p-6 bg-white">
+                <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">{product.name}</p>
+              </div>
             </div>
-            <div className="p-4 sm:p-5 md:p-6 bg-white">
-              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">{product.name}</p>
-              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">Front</p>
-            </div>
-          </div>
-
-          {/* Back View Card */}
-          <div className="group bg-slate-50 rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden card-hover">
-            <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden">
-              <Image
-                src={product.imageBack}
-                alt={`${product.name} - Back View`}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-              />
-            </div>
-            <div className="p-4 sm:p-5 md:p-6 bg-white">
-              <p className="font-body text-xs sm:text-sm font-semibold text-slate-900 text-center uppercase tracking-wider">{product.name}</p>
-              <p className="font-body text-[10px] sm:text-xs text-slate-500 text-center mt-1">Back</p>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Price & Deadline Cards */}

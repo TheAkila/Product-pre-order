@@ -1,10 +1,11 @@
 // Product catalog data types
+export const MAX_PRODUCT_IMAGES = 3;
+
 export interface Product {
   id: string;
   name: string;
   description: string;
-  imageFront: string;
-  imageBack: string;
+  images: string[]; // up to MAX_PRODUCT_IMAGES URLs, first is the cover image
   regularPrice: number;
   preorderPrice: number;
   deliveryFee: number;
@@ -18,8 +19,7 @@ export interface Product {
 export interface ProductFormData {
   name: string;
   description: string;
-  imageFront: string;
-  imageBack: string;
+  images: string[];
   regularPrice: number;
   preorderPrice: number;
   deliveryFee: number;

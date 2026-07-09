@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Order, PaymentStatus } from '@/types/order';
-import { Product, ProductFormData } from '@/types/product';
+import { Product, ProductFormData, MAX_PRODUCT_IMAGES } from '@/types/product';
 import { HeroSlide } from '@/types/heroSlide';
 import {
   Download,
@@ -31,8 +31,7 @@ import {
 const EMPTY_PRODUCT_FORM: ProductFormData = {
   name: '',
   description: '',
-  imageFront: '',
-  imageBack: '',
+  images: [],
   regularPrice: 0,
   preorderPrice: 0,
   deliveryFee: 200,
@@ -69,7 +68,7 @@ export default function AdminPage() {
   const [productForm, setProductForm] = useState<ProductFormData>(EMPTY_PRODUCT_FORM);
   const [isSavingProduct, setIsSavingProduct] = useState(false);
   const [productFormError, setProductFormError] = useState<string | null>(null);
-  const [uploadingImage, setUploadingImage] = useState<'front' | 'back' | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
   const [showDeleteProductConfirm, setShowDeleteProductConfirm] = useState(false);
   const [isDeletingProduct, setIsDeletingProduct] = useState(false);
@@ -303,8 +302,7 @@ export default function AdminPage() {
     setProductForm({
       name: product.name,
       description: product.description,
-      imageFront: product.imageFront,
-      imageBack: product.imageBack,
+      images: product.images,
       regularPrice: product.regularPrice,
       preorderPrice: product.preorderPrice,
       deliveryFee: product.deliveryFee,
@@ -316,8 +314,8 @@ export default function AdminPage() {
     setShowProductModal(true);
   };
 
-  const uploadProductImage = async (file: File, which: 'front' | 'back') => {
-    setUploadingImage(which);
+  const uploadProductImage = async (file: File) => {
+    setUploadingImage(true);
     setProductFormError(null);
     try {
       const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
@@ -334,15 +332,16 @@ export default function AdminPage() {
         throw new Error(data.details || data.error || 'Failed to upload image');
       }
 
-      setProductForm((prev) => ({
-        ...prev,
-        ...(which === 'front' ? { imageFront: data.url } : { imageBack: data.url }),
-      }));
+      setProductForm((prev) => ({ ...prev, images: [...prev.images, data.url].slice(0, MAX_PRODUCT_IMAGES) }));
     } catch (err) {
       setProductFormError(err instanceof Error ? err.message : 'Failed to upload image');
     } finally {
-      setUploadingImage(null);
+      setUploadingImage(false);
     }
+  };
+
+  const removeProductImage = (slotIndex: number) => {
+    setProductForm((prev) => ({ ...prev, images: prev.images.filter((_, i) => i !== slotIndex) }));
   };
 
   const saveProduct = async (e: React.FormEvent) => {
@@ -353,8 +352,8 @@ export default function AdminPage() {
       setProductFormError('Please enter a product name');
       return;
     }
-    if (!productForm.imageFront) {
-      setProductFormError('Please upload a front image');
+    if (productForm.images.filter(Boolean).length === 0) {
+      setProductFormError('Please upload at least one image');
       return;
     }
     if (!productForm.preorderCloses) {
@@ -1361,9 +1360,9 @@ export default function AdminPage() {
               {products.map((product) => (
                 <div key={product.id} className="border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
                   <div className="aspect-video bg-slate-100 relative">
-                    {product.imageFront ? (
+                    {product.images?.[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={product.imageFront} alt={product.name} className="w-full h-full object-cover" />
+                      <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-400">
                         <ImagePlus size={28} />
@@ -1454,35 +1453,36 @@ export default function AdminPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-body text-sm font-medium text-slate-700 mb-1">Front Image</label>
-                    <input
-                      type="file"
-                      accept="image/png,image/jpeg,image/webp"
-                      onChange={(e) => e.target.files?.[0] && uploadProductImage(e.target.files[0], 'front')}
-                      className="w-full text-xs"
-                      disabled={uploadingImage === 'front'}
-                    />
-                    {uploadingImage === 'front' && <p className="text-xs text-slate-500 mt-1">Uploading...</p>}
-                    {productForm.imageFront && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={productForm.imageFront} alt="Front preview" className="mt-2 h-20 w-full object-cover rounded-lg" />
-                    )}
-                  </div>
-                  <div>
-                    <label className="block font-body text-sm font-medium text-slate-700 mb-1">Back Image</label>
-                    <input
-                      type="file"
-                      accept="image/png,image/jpeg,image/webp"
-                      onChange={(e) => e.target.files?.[0] && uploadProductImage(e.target.files[0], 'back')}
-                      className="w-full text-xs"
-                      disabled={uploadingImage === 'back'}
-                    />
-                    {uploadingImage === 'back' && <p className="text-xs text-slate-500 mt-1">Uploading...</p>}
-                    {productForm.imageBack && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={productForm.imageBack} alt="Back preview" className="mt-2 h-20 w-full object-cover rounded-lg" />
+                <div>
+                  <label className="block font-body text-sm font-medium text-slate-700 mb-1">
+                    Product Images ({productForm.images.length}/{MAX_PRODUCT_IMAGES}) - first is the cover image
+                  </label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {productForm.images.map((imageUrl, index) => (
+                      <div key={imageUrl} className="relative">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={imageUrl} alt={`Product image ${index + 1}`} className="h-20 w-full object-cover rounded-lg" />
+                        <button
+                          type="button"
+                          onClick={() => removeProductImage(index)}
+                          className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700"
+                          aria-label={`Remove image ${index + 1}`}
+                        >
+                          <X size={12} strokeWidth={3} />
+                        </button>
+                      </div>
+                    ))}
+                    {productForm.images.length < MAX_PRODUCT_IMAGES && (
+                      <label className="flex flex-col items-center justify-center h-20 w-full rounded-lg border-2 border-dashed border-slate-300 hover:border-brand-red cursor-pointer text-slate-400 hover:text-brand-red transition-colors">
+                        {uploadingImage ? <Loader2 size={18} className="animate-spin" /> : <ImagePlus size={18} />}
+                        <input
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp"
+                          onChange={(e) => e.target.files?.[0] && uploadProductImage(e.target.files[0])}
+                          className="hidden"
+                          disabled={uploadingImage}
+                        />
+                      </label>
                     )}
                   </div>
                 </div>
@@ -1566,7 +1566,7 @@ export default function AdminPage() {
                   </button>
                   <button
                     type="submit"
-                    disabled={isSavingProduct || uploadingImage !== null}
+                    disabled={isSavingProduct || uploadingImage}
                     className="flex-1 px-4 py-2.5 bg-brand-red text-white font-semibold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isSavingProduct ? <Loader2 size={16} className="animate-spin" /> : null}
