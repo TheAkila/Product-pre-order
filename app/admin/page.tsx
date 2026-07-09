@@ -26,6 +26,7 @@ import {
   ImagePlus,
   Boxes,
   ShoppingBag,
+  Images,
 } from 'lucide-react';
 
 const EMPTY_PRODUCT_FORM: ProductFormData = {
@@ -683,6 +684,15 @@ export default function AdminPage() {
           >
             <Boxes size={16} strokeWidth={2} />
             Products
+          </button>
+          <button
+            onClick={() => setActiveTab('hero')}
+            className={`px-5 py-2.5 rounded-xl font-heading font-bold text-sm flex items-center gap-2 transition-all ${
+              activeTab === 'hero' ? 'bg-brand-black text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <Images size={16} strokeWidth={2} />
+            Hero Carousel
           </button>
         </div>
 
@@ -1403,6 +1413,80 @@ export default function AdminPage() {
                       </button>
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        )}
+
+        {activeTab === 'hero' && (
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div>
+              <h2 className="font-heading text-xl font-bold text-brand-black mb-2">Hero Carousel</h2>
+              <p className="font-body text-sm text-slate-600">
+                Manage the images shown in the homepage hero carousel. Order matches upload order.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={fetchHeroSlides}
+                disabled={heroSlidesLoading}
+                className="bg-slate-100 text-brand-black px-4 py-3 font-heading font-bold rounded-xl hover:bg-slate-200 transition-all flex items-center gap-2 disabled:opacity-50"
+              >
+                <RefreshCw size={16} className={heroSlidesLoading ? 'animate-spin' : ''} strokeWidth={2} />
+              </button>
+              <label className="bg-gradient-to-r from-brand-red to-red-700 text-white px-5 py-3 font-heading font-bold rounded-xl hover:from-red-700 hover:to-red-800 transition-all flex items-center gap-2 shadow-lg cursor-pointer disabled:opacity-50">
+                {uploadingHeroSlide ? <Loader2 size={18} className="animate-spin" strokeWidth={2} /> : <Plus size={18} strokeWidth={2} />}
+                Add Slide
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(e) => e.target.files?.[0] && uploadHeroSlide(e.target.files[0])}
+                  className="hidden"
+                  disabled={uploadingHeroSlide}
+                />
+              </label>
+            </div>
+          </div>
+
+          {heroSlidesError && (
+            <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+              <p className="font-body text-sm text-red-700">{heroSlidesError}</p>
+            </div>
+          )}
+
+          {heroSlidesLoading ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <Loader2 className="animate-spin text-brand-red mb-4" size={32} strokeWidth={2} />
+              <p className="font-body text-sm text-slate-500">Loading slides...</p>
+            </div>
+          ) : heroSlides.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <Images size={32} className="text-slate-400 mb-4" strokeWidth={2} />
+              <p className="font-heading text-lg font-medium text-slate-600 mb-2">No slides yet</p>
+              <p className="font-body text-sm text-slate-500">
+                The homepage shows a default fallback image until you add at least one slide here.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {heroSlides.map((slide, index) => (
+                <div key={slide.id} className="relative rounded-xl overflow-hidden border border-slate-200 group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={slide.imageUrl} alt={`Hero slide ${index + 1}`} className="aspect-video w-full object-cover" />
+                  <span className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                    #{index + 1}
+                  </span>
+                  <button
+                    onClick={() => deleteHeroSlide(slide.id)}
+                    disabled={deletingSlideId === slide.id}
+                    className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1.5 hover:bg-red-700 transition-colors disabled:opacity-50"
+                    aria-label={`Remove slide ${index + 1}`}
+                  >
+                    {deletingSlideId === slide.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} strokeWidth={2} />}
+                  </button>
                 </div>
               ))}
             </div>

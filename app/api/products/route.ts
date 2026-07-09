@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { collection, addDoc, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
 import { db, getFirebaseStatus } from '@/lib/firebase';
 import { Product, ProductFormData, MAX_PRODUCT_IMAGES } from '@/types/product';
+import { mapProductDoc } from '@/lib/products';
 
 // GET /api/products - Fetch all products (add ?activeOnly=true for public homepage use)
 export async function GET(request: NextRequest) {
@@ -27,20 +28,7 @@ export async function GET(request: NextRequest) {
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       if (activeOnly && data.active === false) return;
-      products.push({
-        id: doc.id,
-        name: data.name,
-        description: data.description || '',
-        images: Array.isArray(data.images) ? data.images : [],
-        regularPrice: data.regularPrice,
-        preorderPrice: data.preorderPrice,
-        deliveryFee: data.deliveryFee ?? 0,
-        preorderCloses: data.preorderCloses,
-        active: data.active !== false,
-        sortOrder: data.sortOrder ?? 0,
-        createdAt: data.createdAt?.toDate?.() ?? new Date(),
-        updatedAt: data.updatedAt?.toDate?.(),
-      });
+      products.push(mapProductDoc(doc.id, data));
     });
 
     return NextResponse.json(products);

@@ -1,51 +1,12 @@
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db, getFirebaseStatus } from '@/lib/firebase';
-import { Product } from '@/types/product';
+import { getActiveProducts } from '@/lib/products';
 import Hero from '@/components/Hero';
-import ProductSection from '@/components/ProductSection';
+import ProductCard from '@/components/ProductCard';
 import Details from '@/components/Details';
 import Footer from '@/components/Footer';
 
 export const dynamic = 'force-dynamic';
-
-async function getActiveProducts(): Promise<Product[]> {
-  const firebaseStatus = getFirebaseStatus();
-  if (!firebaseStatus.isInitialized || !db) {
-    console.error('Firebase not initialized, cannot load products:', firebaseStatus);
-    return [];
-  }
-
-  try {
-    const productsRef = collection(db, 'products');
-    const q = query(productsRef, orderBy('sortOrder', 'asc'));
-    const snapshot = await getDocs(q);
-
-    const products: Product[] = [];
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.active === false) return;
-      products.push({
-        id: doc.id,
-        name: data.name,
-        description: data.description || '',
-        images: Array.isArray(data.images) ? data.images : [],
-        regularPrice: data.regularPrice,
-        preorderPrice: data.preorderPrice,
-        deliveryFee: data.deliveryFee ?? 0,
-        preorderCloses: data.preorderCloses,
-        active: data.active !== false,
-        sortOrder: data.sortOrder ?? 0,
-        createdAt: data.createdAt?.toDate?.() ?? new Date(),
-        updatedAt: data.updatedAt?.toDate?.(),
-      });
-    });
-
-    return products;
-  } catch (error) {
-    console.error('Error loading products for homepage:', error);
-    return [];
-  }
-}
 
 async function getHeroSlideImages(): Promise<string[]> {
   const firebaseStatus = getFirebaseStatus();
@@ -70,15 +31,30 @@ export default async function Home() {
   return (
     <main className="min-h-screen">
       <Hero images={heroImages} />
-      <div id="products">
-        {products.length > 0 ? (
-          products.map((product) => <ProductSection key={product.id} product={product} />)
-        ) : (
-          <div className="py-20 text-center">
-            <p className="font-body text-slate-500">No products are available for pre-order right now. Check back soon.</p>
+      <section id="products" className="py-12 sm:py-16 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-brand-black mb-2 sm:mb-3">
+              Shop Pre-Orders
+            </h2>
+            <p className="font-body text-sm sm:text-base text-slate-600 max-w-xl mx-auto">
+              Pick an item to view details, pricing, and reserve yours.
+            </p>
           </div>
-        )}
-      </div>
+
+          {products.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-center font-body text-slate-500 py-12">
+              No products are available for pre-order right now. Check back soon.
+            </p>
+          )}
+        </div>
+      </section>
       <Details />
       <Footer />
     </main>

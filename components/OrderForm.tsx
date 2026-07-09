@@ -130,7 +130,7 @@ export default function OrderForm({ product }: { product: Product }) {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="input-seamless w-full"
-                placeholder="Karlos Nazar"
+                placeholder="Akila Jayakody"
                 required
                 disabled={isSubmitting}
               />
@@ -259,7 +259,7 @@ export default function OrderForm({ product }: { product: Product }) {
                     <MapPin size={20} strokeWidth={2} className={formData.deliveryMethod === 'COLLECT' ? 'text-brand-red' : 'text-slate-500'} />
                     <div>
                       <p className="font-body font-semibold text-brand-black">Collect at Point</p>
-                      <p className="font-body text-xs text-slate-600 mt-1">Pick up from Colombo 07</p>
+                      <p className="font-body text-xs text-slate-600 mt-1">Pick up from Indoor Gym</p>
                     </div>
                   </div>
                 </button>
@@ -443,24 +443,24 @@ export default function OrderForm({ product }: { product: Product }) {
               )}
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isSubmitting || !formData.acceptedTerms || !formData.acceptedPrivacy}
-              className="btn-primary w-full text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 min-h-[56px]"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="animate-spin" size={20} strokeWidth={2.5} />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <ShoppingBag size={20} strokeWidth={2.5} />
-                  Pay & Reserve Your {product.name}
-                </>
-              )}
-            </button>
+           {/* Submit Button */}
+<button
+  type="submit"
+  disabled={isSubmitting || !formData.acceptedTerms || !formData.acceptedPrivacy}
+  className="w-full text-base sm:text-lg bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 min-h-[56px]"
+>
+  {isSubmitting ? (
+    <>
+      <Loader2 className="animate-spin" size={20} strokeWidth={2.5} />
+      Processing...
+    </>
+  ) : (
+    <>
+      <ShoppingBag size={20} strokeWidth={2.5} />
+      Pay & Reserve Your Order
+    </>
+  )}
+</button>
 
             {/* Security Note */}
             <p className="font-body text-xs text-slate-500 text-center pt-4">

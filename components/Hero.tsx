@@ -32,7 +32,7 @@ export default function Hero({ images }: { images?: string[] }) {
   const prevSlide = () => goToSlide(currentSlide - 1);
 
   return (
-    <section className="relative w-full bg-brand-black py-14 sm:py-20 md:py-24 flex flex-col items-center overflow-hidden">
+    <section className="relative w-full bg-white py-14 sm:py-20 md:py-24 flex flex-col items-center overflow-hidden">
       <div
         className="relative w-full max-w-5xl h-[240px] sm:h-[380px] md:h-[460px] flex items-center justify-center"
         style={{ perspective: '1400px' }}
@@ -86,7 +86,7 @@ export default function Hero({ images }: { images?: string[] }) {
           {/* Navigation Buttons */}
           <button
             onClick={prevSlide}
-            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-all duration-300"
+            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-[110] bg-black/5 hover:bg-black/10 text-brand-black p-2 rounded-full transition-all duration-300"
             aria-label="Previous slide"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -94,20 +94,20 @@ export default function Hero({ images }: { images?: string[] }) {
 
           <button
             onClick={nextSlide}
-            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-all duration-300"
+            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-[110] bg-black/5 hover:bg-black/10 text-brand-black p-2 rounded-full transition-all duration-300"
             aria-label="Next slide"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
 
           {/* Dots Indicator */}
-          <div className="mt-6 sm:mt-8 flex gap-2">
+          <div className="relative z-[110] mt-6 sm:mt-8 flex gap-2">
             {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`h-2.5 rounded-full transition-all duration-300 ${
-                  index === currentSlide ? 'bg-white w-8' : 'bg-white/40 hover:bg-white/60 w-2.5'
+                  index === currentSlide ? 'bg-brand-black w-8' : 'bg-slate-300 hover:bg-slate-400 w-2.5'
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
