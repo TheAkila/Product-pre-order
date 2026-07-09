@@ -4,10 +4,8 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const DEFAULT_IMAGES = ['/images/home_desktop.png', '/images/home_desktop2.png'];
-
 export default function Hero({ images }: { images?: string[] }) {
-  const slides = images && images.length > 0 ? images : DEFAULT_IMAGES;
+  const slides = images || [];
   const [currentSlide, setCurrentSlide] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
 
@@ -30,6 +28,10 @@ export default function Hero({ images }: { images?: string[] }) {
 
   const nextSlide = () => goToSlide(currentSlide + 1);
   const prevSlide = () => goToSlide(currentSlide - 1);
+
+  if (slides.length === 0) {
+    return null;
+  }
 
   return (
     <section className="relative w-full bg-white py-14 sm:py-20 md:py-24 flex flex-col items-center overflow-hidden">

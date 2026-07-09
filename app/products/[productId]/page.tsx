@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { getProductById } from '@/lib/products';
@@ -32,6 +33,19 @@ export default async function ProductPage({
         </Link>
       </div>
       <Product product={product} />
+      {product.bannerImage && (
+        <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 mb-4">
+          <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden">
+            <Image
+              src={product.bannerImage}
+              alt={`${product.name} banner`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 768px"
+            />
+          </div>
+        </div>
+      )}
       <OrderForm product={product} />
       <Footer />
     </main>

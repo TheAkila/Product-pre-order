@@ -8,6 +8,7 @@ export function mapProductDoc(id: string, data: DocumentData): Product {
     name: data.name,
     description: data.description || '',
     images: Array.isArray(data.images) ? data.images : [],
+    bannerImage: data.bannerImage || undefined,
     regularPrice: data.regularPrice,
     preorderPrice: data.preorderPrice,
     deliveryFee: data.deliveryFee ?? 0,

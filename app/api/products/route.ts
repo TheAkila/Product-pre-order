@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
       name: body.name.trim(),
       description: (body.description || '').trim(),
       images,
+      bannerImage: body.bannerImage || '',
       regularPrice: Number(body.regularPrice),
       preorderPrice: Number(body.preorderPrice),
       deliveryFee: Number(body.deliveryFee) || 0,

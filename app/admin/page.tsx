@@ -33,6 +33,7 @@ const EMPTY_PRODUCT_FORM: ProductFormData = {
   name: '',
   description: '',
   images: [],
+  bannerImage: '',
   regularPrice: 0,
   preorderPrice: 0,
   deliveryFee: 200,
@@ -70,6 +71,7 @@ export default function AdminPage() {
   const [isSavingProduct, setIsSavingProduct] = useState(false);
   const [productFormError, setProductFormError] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingBannerImage, setUploadingBannerImage] = useState(false);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
   const [showDeleteProductConfirm, setShowDeleteProductConfirm] = useState(false);
   const [isDeletingProduct, setIsDeletingProduct] = useState(false);
@@ -304,6 +306,7 @@ export default function AdminPage() {
       name: product.name,
       description: product.description,
       images: product.images,
+      bannerImage: product.bannerImage || '',
       regularPrice: product.regularPrice,
       preorderPrice: product.preorderPrice,
       deliveryFee: product.deliveryFee,
@@ -343,6 +346,36 @@ export default function AdminPage() {
 
   const removeProductImage = (slotIndex: number) => {
     setProductForm((prev) => ({ ...prev, images: prev.images.filter((_, i) => i !== slotIndex) }));
+  };
+
+  const uploadBannerImage = async (file: File) => {
+    setUploadingBannerImage(true);
+    setProductFormError(null);
+    try {
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+      const body = new FormData();
+      body.append('file', file);
+      body.append('adminPassword', adminPassword || '');
+
+      const response = await fetch('/api/products/upload', {
+        method: 'POST',
+        body,
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.details || data.error || 'Failed to upload image');
+      }
+
+      setProductForm((prev) => ({ ...prev, bannerImage: data.url }));
+    } catch (err) {
+      setProductFormError(err instanceof Error ? err.message : 'Failed to upload image');
+    } finally {
+      setUploadingBannerImage(false);
+    }
+  };
+
+  const removeBannerImage = () => {
+    setProductForm((prev) => ({ ...prev, bannerImage: '' }));
   };
 
   const saveProduct = async (e: React.FormEvent) => {
@@ -1467,7 +1500,7 @@ export default function AdminPage() {
               <Images size={32} className="text-slate-400 mb-4" strokeWidth={2} />
               <p className="font-heading text-lg font-medium text-slate-600 mb-2">No slides yet</p>
               <p className="font-body text-sm text-slate-500">
-                The homepage shows a default fallback image until you add at least one slide here.
+                The homepage hero section stays hidden until you add at least one slide here.
               </p>
             </div>
           ) : (
@@ -1571,6 +1604,37 @@ export default function AdminPage() {
                   </div>
                 </div>
 
+                <div>
+                  <label className="block font-body text-sm font-medium text-slate-700 mb-1">
+                    Banner Image (optional) - shown above the order form on the product page
+                  </label>
+                  {productForm.bannerImage ? (
+                    <div className="relative w-full max-w-xs">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={productForm.bannerImage} alt="Banner preview" className="h-24 w-full object-cover rounded-lg" />
+                      <button
+                        type="button"
+                        onClick={removeBannerImage}
+                        className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700"
+                        aria-label="Remove banner image"
+                      >
+                        <X size={12} strokeWidth={3} />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex flex-col items-center justify-center h-20 w-full max-w-xs rounded-lg border-2 border-dashed border-slate-300 hover:border-brand-red cursor-pointer text-slate-400 hover:text-brand-red transition-colors">
+                      {uploadingBannerImage ? <Loader2 size={18} className="animate-spin" /> : <ImagePlus size={18} />}
+                      <input
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        onChange={(e) => e.target.files?.[0] && uploadBannerImage(e.target.files[0])}
+                        className="hidden"
+                        disabled={uploadingBannerImage}
+                      />
+                    </label>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block font-body text-sm font-medium text-slate-700 mb-1">Regular Price (LKR)</label>
@@ -1650,7 +1714,7 @@ export default function AdminPage() {
                   </button>
                   <button
                     type="submit"
-                    disabled={isSavingProduct || uploadingImage}
+                    disabled={isSavingProduct || uploadingImage || uploadingBannerImage}
                     className="flex-1 px-4 py-2.5 bg-brand-red text-white font-semibold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isSavingProduct ? <Loader2 size={16} className="animate-spin" /> : null}
