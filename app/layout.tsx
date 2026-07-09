@@ -35,12 +35,12 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Lifting Social - Pre-Order Elite Gym Shaker",
-  description: "Built for Those Who Lift. Reserve your limited-edition Elite Gym Shaker now.",
+  title: "Lifting Social - Official Pre-Order Store",
+  description: "Built for Those Who Lift.",
   keywords: ["Lifting Social", "gym shaker", "protein shaker", "fitness bottle", "pre-order"],
   openGraph: {
-    title: "Lifting Social - Pre-Order Elite Gym Shaker",
-    description: "Built for Those Who Lift. Reserve your limited-edition Elite Gym Shaker now.",
+    title: "Lifting Social - Official Pre-Order Store",
+    description: "Built for Those Who Lift.",
     type: "website",
   },
 };
