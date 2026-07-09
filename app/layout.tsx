@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Outfit, IBM_Plex_Sans } from "next/font/google";
+// @ts-ignore - global stylesheet is handled by Next.js
 import "./globals.css";
 import AnnouncementBar from "@/components/AnnouncementBar";
 
