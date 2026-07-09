@@ -1460,6 +1460,7 @@ export default function AdminPage() {
               <h2 className="font-heading text-xl font-bold text-brand-black mb-2">Hero Carousel</h2>
               <p className="font-body text-sm text-slate-600">
                 Manage the images shown in the homepage hero carousel. Order matches upload order.
+                Use square (1:1) images, like an Instagram post, for the best fit.
               </p>
             </div>
             <div className="flex gap-2">
@@ -1508,7 +1509,7 @@ export default function AdminPage() {
               {heroSlides.map((slide, index) => (
                 <div key={slide.id} className="relative rounded-xl overflow-hidden border border-slate-200 group">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={slide.imageUrl} alt={`Hero slide ${index + 1}`} className="aspect-video w-full object-cover" />
+                  <img src={slide.imageUrl} alt={`Hero slide ${index + 1}`} className="aspect-square w-full object-cover" />
                   <span className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
                     #{index + 1}
                   </span>

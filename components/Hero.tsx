@@ -36,7 +36,7 @@ export default function Hero({ images }: { images?: string[] }) {
   return (
     <section className="relative w-full bg-white py-14 sm:py-20 md:py-24 flex flex-col items-center overflow-hidden">
       <div
-        className="relative w-full max-w-5xl h-[240px] sm:h-[380px] md:h-[460px] flex items-center justify-center"
+        className="relative w-full max-w-5xl h-[220px] sm:h-[320px] md:h-[380px] flex items-center justify-center"
         style={{ perspective: '1400px' }}
         onMouseEnter={() => setAutoPlay(false)}
         onMouseLeave={() => setAutoPlay(true)}
@@ -59,7 +59,7 @@ export default function Hero({ images }: { images?: string[] }) {
               role="button"
               tabIndex={isCenter ? -1 : 0}
               aria-label={isCenter ? undefined : `Go to slide ${index + 1}`}
-              className="absolute w-[68%] sm:w-[62%] h-full rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 ease-out"
+              className="absolute aspect-square w-[220px] sm:w-[320px] md:w-[380px] rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 ease-out"
               style={{
                 transform: `translateX(${translateX}%) rotateY(${rotateY}deg) scale(${scale})`,
                 zIndex: 100 - distance,
@@ -75,7 +75,7 @@ export default function Hero({ images }: { images?: string[] }) {
                 fill
                 className="object-cover"
                 priority={index === currentSlide}
-                sizes="(max-width: 640px) 68vw, 620px"
+                sizes="(max-width: 640px) 220px, (max-width: 768px) 320px, 380px"
               />
               {!isCenter && <div className="absolute inset-0 bg-black/40" />}
             </div>
