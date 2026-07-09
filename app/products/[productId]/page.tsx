@@ -34,14 +34,14 @@ export default async function ProductPage({
       </div>
       <Product product={product} />
       {product.bannerImage && (
-        <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 mb-4">
-          <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden">
+        <div className="max-w-md mx-auto px-3 sm:px-6 lg:px-8 mb-4">
+          <div className="relative w-full aspect-square rounded-xl sm:rounded-2xl overflow-hidden">
             <Image
               src={product.bannerImage}
               alt={`${product.name} banner`}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, 768px"
+              sizes="(max-width: 448px) 100vw, 448px"
             />
           </div>
         </div>

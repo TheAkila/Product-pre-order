@@ -1607,12 +1607,12 @@ export default function AdminPage() {
 
                 <div>
                   <label className="block font-body text-sm font-medium text-slate-700 mb-1">
-                    Banner Image (optional) - shown above the order form on the product page
+                    Banner Image (optional) - shown above the order form on the product page. Use a square (1:1) image, like an Instagram post.
                   </label>
                   {productForm.bannerImage ? (
-                    <div className="relative w-full max-w-xs">
+                    <div className="relative w-32">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={productForm.bannerImage} alt="Banner preview" className="h-24 w-full object-cover rounded-lg" />
+                      <img src={productForm.bannerImage} alt="Banner preview" className="aspect-square w-full object-cover rounded-lg" />
                       <button
                         type="button"
                         onClick={removeBannerImage}
@@ -1623,7 +1623,7 @@ export default function AdminPage() {
                       </button>
                     </div>
                   ) : (
-                    <label className="flex flex-col items-center justify-center h-20 w-full max-w-xs rounded-lg border-2 border-dashed border-slate-300 hover:border-brand-red cursor-pointer text-slate-400 hover:text-brand-red transition-colors">
+                    <label className="flex flex-col items-center justify-center aspect-square w-32 rounded-lg border-2 border-dashed border-slate-300 hover:border-brand-red cursor-pointer text-slate-400 hover:text-brand-red transition-colors">
                       {uploadingBannerImage ? <Loader2 size={18} className="animate-spin" /> : <ImagePlus size={18} />}
                       <input
                         type="file"
