@@ -1111,6 +1111,9 @@ export default function AdminPage() {
                       <th className="py-4 px-6 text-left">
                         <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Product</span>
                       </th>
+                      <th className="py-4 px-6 text-center">
+                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Size</span>
+                      </th>
                       <th className="py-4 px-6 text-left">
                         <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Customer</span>
                       </th>
@@ -1159,14 +1162,20 @@ export default function AdminPage() {
                             <ShoppingBag size={14} className="text-brand-red shrink-0" strokeWidth={2} />
                             <div>
                               <p className="font-body font-semibold text-brand-black">{order.productName || 'Unknown product'}</p>
-                              {order.size && (
-                                <p className="font-body text-xs text-slate-500">Size: {order.size}</p>
-                              )}
                               {order.unitPrice != null && (
                                 <p className="font-body text-xs text-slate-500">LKR {order.unitPrice.toLocaleString()} / unit</p>
                               )}
                             </div>
                           </div>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          {order.size ? (
+                            <span className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-semibold rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+                              {order.size}
+                            </span>
+                          ) : (
+                            <span className="text-slate-400 text-sm">—</span>
+                          )}
                         </td>
                         <td className="py-4 px-6">
                           <div>
