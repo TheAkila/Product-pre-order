@@ -845,7 +845,7 @@ export default function AdminPage() {
         </div>
 
         {/* Orders Table */}
-        <div className="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-16">
               <div className="w-16 h-16 bg-brand-red/10 rounded-2xl flex items-center justify-center mb-4 animate-pulse">
@@ -996,46 +996,46 @@ export default function AdminPage() {
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gradient-to-r from-slate-100 to-slate-50 border-b-2 border-slate-200 sticky top-0">
+                  <thead className="bg-slate-50 border-b border-slate-200 sticky top-0">
                     <tr>
                       <th className="py-4 px-6 text-left">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Order ID</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Order ID</span>
                       </th>
                       <th className="py-4 px-6 text-left">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Product</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Product</span>
                       </th>
                       <th className="py-4 px-6 text-center">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Size</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Size</span>
                       </th>
                       <th className="py-4 px-6 text-left">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Customer</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Customer</span>
                       </th>
                       <th className="py-4 px-6 text-left">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Email</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Email</span>
                       </th>
                       <th className="py-4 px-6 text-left">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Contact</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Contact</span>
                       </th>
                       <th className="py-4 px-6 text-center">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Quantity</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Quantity</span>
                       </th>
                       <th className="py-4 px-6 text-right">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Amount</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Amount</span>
                       </th>
                       <th className="py-4 px-6 text-center">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Status</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Status</span>
                       </th>
                       <th className="py-4 px-6 text-left">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Delivery</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Delivery</span>
                       </th>
                       <th className="py-4 px-6 text-center">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Delivery Status</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Delivery Status</span>
                       </th>
                       <th className="py-4 px-6 text-right">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Date</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Date</span>
                       </th>
                       <th className="py-4 px-6 text-center">
-                        <span className="font-body text-xs font-bold text-slate-700 uppercase tracking-widest">Action</span>
+                        <span className="font-body text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Action</span>
                       </th>
                     </tr>
                   </thead>
