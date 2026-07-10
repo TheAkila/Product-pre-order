@@ -16,7 +16,6 @@ import {
   CreditCard,
   RefreshCw,
   Filter,
-  Calendar,
   Eye,
   Trash2,
   X,
@@ -592,27 +591,6 @@ export default function AdminPage() {
     revenue: orders.filter(o => o.paymentStatus === 'PAID').reduce((sum, o) => sum + o.amount, 0),
   };
 
-  // Quantity breakdown statistics
-  const quantityStats = Array.from(new Set(orders.map(o => o.quantity)))
-    .sort((a, b) => a - b)
-    .map(q => {
-      const qOrders = orders.filter(o => o.quantity === q);
-      return {
-        quantity: q,
-        orders: qOrders.length,
-        units: qOrders.reduce((sum, o) => sum + o.quantity, 0),
-      };
-    });
-
-  const mostPopularQuantity = (() => {
-    const counts: Record<number, number> = {};
-    orders.forEach(o => { counts[o.quantity] = (counts[o.quantity] || 0) + 1; });
-    const entries = Object.entries(counts);
-    if (entries.length === 0) return '-';
-    entries.sort((a, b) => Number(b[1]) - Number(a[1]));
-    return `${entries[0][0]} unit(s)`;
-  })();
-
   if (!isAuthenticated) {
     return (
       <main className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-50 to-slate-100">
@@ -683,27 +661,23 @@ export default function AdminPage() {
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
-          <div className="space-y-2">
-            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-brand-black">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200">
+          <div>
+            <h1 className="font-heading text-2xl sm:text-3xl font-bold text-brand-black">
               Order Dashboard
             </h1>
-            <p className="font-body text-lg text-slate-600">
-              Real-time overview of pre-order performance and analytics
+            <p className="font-body text-sm text-slate-500 mt-0.5">
+              Pre-order performance at a glance
             </p>
-            <div className="flex items-center gap-2 text-sm text-slate-500">
-              <Calendar size={16} />
-              <span>Last updated: {new Date().toLocaleString()}</span>
-            </div>
           </div>
-          
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-2">
             <button
               onClick={fetchOrders}
               disabled={loading}
-              className="bg-white border-2 border-slate-200 text-brand-black px-5 py-2.5 font-semibold rounded-xl hover:border-brand-red hover:text-brand-red transition-all flex items-center gap-2 disabled:opacity-50"
+              className="bg-slate-100 text-brand-black px-4 py-2.5 text-sm font-semibold rounded-lg hover:bg-slate-200 transition-all flex items-center gap-2 disabled:opacity-50"
             >
-              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+              <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
               Refresh
             </button>
             <button
@@ -711,16 +685,16 @@ export default function AdminPage() {
                 setIsAuthenticated(false);
                 setPassword('');
               }}
-              className="bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2.5 font-semibold rounded-xl hover:from-red-600 hover:to-red-700 transition-all flex items-center gap-2 shadow-lg"
+              className="bg-white border border-slate-200 text-slate-600 px-4 py-2.5 text-sm font-semibold rounded-lg hover:border-red-300 hover:text-red-600 transition-all flex items-center gap-2"
             >
-              <LogOut size={16} />
+              <LogOut size={15} />
               Logout
             </button>
           </div>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex gap-2 bg-white rounded-2xl p-2 shadow-lg border border-slate-200 w-fit">
+        <div className="flex gap-2 bg-white rounded-2xl p-2 shadow-sm border border-slate-200 w-fit">
           <button
             onClick={() => setActiveTab('orders')}
             className={`px-5 py-2.5 rounded-xl font-heading font-bold text-sm flex items-center gap-2 transition-all ${
@@ -752,153 +726,98 @@ export default function AdminPage() {
 
         {activeTab === 'orders' && (
         <>
-        {/* KPI Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 hover:border-brand-red/20">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <Package size={24} className="text-blue-600" strokeWidth={2} />
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          <div className="bg-white rounded-xl p-4 border border-slate-200">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                <Package size={16} className="text-blue-600" strokeWidth={2} />
               </div>
-              <div className="text-right">
-                <p className="font-heading text-3xl font-bold text-brand-black">{stats.total}</p>
-                <p className="font-body text-xs text-slate-500 uppercase tracking-wider">Total Orders</p>
-              </div>
+              <span className="font-body text-xs font-medium text-slate-500 uppercase tracking-wide">Total</span>
             </div>
-            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-blue-500 rounded-full transition-all duration-500" 
-                style={{width: `${stats.total > 0 ? 100 : 0}%`}}
-              />
-            </div>
+            <p className="font-heading text-2xl font-bold text-brand-black">{stats.total}</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 hover:border-green-200">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <CreditCard size={24} className="text-green-600" strokeWidth={2} />
+          <div className="bg-white rounded-xl p-4 border border-slate-200">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center shrink-0">
+                <CreditCard size={16} className="text-green-600" strokeWidth={2} />
               </div>
-              <div className="text-right">
-                <p className="font-heading text-3xl font-bold text-green-600">{stats.paid}</p>
-                <p className="font-body text-xs text-slate-500 uppercase tracking-wider">Paid Orders</p>
-              </div>
+              <span className="font-body text-xs font-medium text-slate-500 uppercase tracking-wide">Paid</span>
             </div>
-            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-green-500 rounded-full transition-all duration-500" 
-                style={{width: `${stats.total > 0 ? (stats.paid / stats.total) * 100 : 0}%`}}
-              />
-            </div>
+            <p className="font-heading text-2xl font-bold text-green-600">{stats.paid}</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 hover:border-yellow-200">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                <Users size={24} className="text-yellow-600" strokeWidth={2} />
+          <div className="bg-white rounded-xl p-4 border border-slate-200">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center shrink-0">
+                <Users size={16} className="text-yellow-600" strokeWidth={2} />
               </div>
-              <div className="text-right">
-                <p className="font-heading text-3xl font-bold text-yellow-600">{stats.pending}</p>
-                <p className="font-body text-xs text-slate-500 uppercase tracking-wider">Pending</p>
-              </div>
+              <span className="font-body text-xs font-medium text-slate-500 uppercase tracking-wide">Pending</span>
             </div>
-            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-yellow-500 rounded-full transition-all duration-500" 
-                style={{width: `${stats.total > 0 ? (stats.pending / stats.total) * 100 : 0}%`}}
-              />
-            </div>
+            <p className="font-heading text-2xl font-bold text-yellow-600">{stats.pending}</p>
           </div>
 
-          <div className="bg-gradient-to-br from-brand-red to-red-700 rounded-2xl p-6 shadow-brand-lg text-white hover:shadow-2xl transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <TrendingUp size={24} className="text-white" strokeWidth={2} />
+          <div className="bg-white rounded-xl p-4 border border-slate-200">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center shrink-0">
+                <AlertTriangle size={16} className="text-red-600" strokeWidth={2} />
               </div>
-              <div className="text-right">
-                <p className="font-heading text-2xl sm:text-3xl font-bold">LKR {stats.revenue.toLocaleString()}</p>
-                <p className="font-body text-xs text-white/80 uppercase tracking-wider">Total Revenue</p>
-              </div>
+              <span className="font-body text-xs font-medium text-slate-500 uppercase tracking-wide">Cancelled</span>
             </div>
-            <div className="flex items-center text-sm text-white/90">
-              <span>From {stats.paid} paid orders</span>
-            </div>
+            <p className="font-heading text-2xl font-bold text-red-600">{stats.cancelled}</p>
           </div>
-        </div>
 
-        {/* Secondary Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <Eye size={24} className="text-purple-600" strokeWidth={2} />
+          <div className="bg-white rounded-xl p-4 border border-slate-200">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center shrink-0">
+                <Eye size={16} className="text-purple-600" strokeWidth={2} />
               </div>
+              <span className="font-body text-xs font-medium text-slate-500 uppercase tracking-wide">Conversion</span>
             </div>
-            <div>
-              <p className="font-body text-xs text-slate-600 uppercase tracking-wider mb-2">Conversion Rate</p>
-              <p className="font-heading text-3xl font-bold text-purple-600 mb-1">
-                {stats.total > 0 ? Math.round((stats.paid / stats.total) * 100) : 0}%
+            <p className="font-heading text-2xl font-bold text-purple-600">
+              {stats.total > 0 ? Math.round((stats.paid / stats.total) * 100) : 0}%
+            </p>
+          </div>
+
+          <div className="col-span-2 sm:col-span-1 bg-brand-black rounded-xl p-4 text-white">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center shrink-0">
+                <TrendingUp size={16} strokeWidth={2} />
+              </div>
+              <span className="font-body text-xs font-medium text-white/60 uppercase tracking-wide">Revenue</span>
+            </div>
+            <p className="font-heading text-2xl font-bold">LKR {stats.revenue.toLocaleString()}</p>
+            {stats.paid > 0 && (
+              <p className="font-body text-xs text-white/50 mt-0.5">
+                Avg LKR {Math.round(stats.revenue / stats.paid).toLocaleString()}/order
               </p>
-              <p className="font-body text-xs text-slate-500">Paid vs Total Orders</p>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 shadow-lg text-white hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <TrendingUp size={24} className="text-white" strokeWidth={2} />
-              </div>
-            </div>
-            <div>
-              <p className="font-body text-xs text-white/80 uppercase tracking-wider mb-2">Avg Order Value</p>
-              <p className="font-heading text-2xl font-bold mb-1">
-                LKR {stats.paid > 0 ? Math.round(stats.revenue / stats.paid).toLocaleString() : 0}
-              </p>
-              <p className="font-body text-xs text-white/80">Per paid order</p>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <Package size={24} className="text-orange-600" strokeWidth={2} />
-              </div>
-            </div>
-            <div>
-              <p className="font-body text-xs text-slate-600 uppercase tracking-wider mb-2">Total Units</p>
-              <p className="font-heading text-3xl font-bold text-orange-600 mb-1">
-                {orders.reduce((sum, order) => sum + order.quantity, 0)}
-              </p>
-              <p className="font-body text-xs text-slate-500">Gym shakers ordered</p>
-            </div>
+            )}
           </div>
         </div>
 
         {/* Search, Filter & Export Controls */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
-          <div className="mb-6">
-            <h2 className="font-heading text-xl font-bold text-brand-black mb-2">Orders List</h2>
-            <p className="font-body text-sm text-slate-600">Search, filter, and manage all pre-orders</p>
-          </div>
-
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 mb-6">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
             {/* Search Bar */}
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} strokeWidth={2} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} strokeWidth={2} />
               <input
                 type="text"
                 placeholder="Search by name, ID, or phone..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 border-transparent rounded-xl pl-12 pr-4 py-3.5 text-brand-black font-body placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300"
+                className="w-full bg-slate-50 border-transparent rounded-xl pl-11 pr-4 py-3 text-brand-black font-body placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300"
               />
             </div>
-            
+
             {/* Filter Dropdown */}
             <div className="relative">
-              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} strokeWidth={2} />
+              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} strokeWidth={2} />
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as PaymentStatus | 'ALL')}
-                className="appearance-none bg-slate-50 border-transparent rounded-xl pl-12 pr-10 py-3.5 text-brand-black font-body focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300 cursor-pointer min-w-[180px]"
+                className="appearance-none bg-slate-50 border-transparent rounded-xl pl-11 pr-10 py-3 text-brand-black font-body focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300 cursor-pointer min-w-[170px]"
               >
                 <option value="ALL">All Orders</option>
                 <option value="PAID">Paid</option>
@@ -907,47 +826,21 @@ export default function AdminPage() {
               </select>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-2 sm:gap-3">
-              <button
-                onClick={exportToCSV}
-                className="bg-gradient-to-r from-brand-red to-red-700 text-white px-4 sm:px-6 py-3.5 font-heading font-bold rounded-xl hover:from-red-700 hover:to-red-800 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl active:scale-95 whitespace-nowrap"
-              >
-                <Download size={18} strokeWidth={2} />
-                <span className="hidden sm:inline">Export</span> CSV
-              </button>
-              <button
-                onClick={fetchOrders}
-                disabled={loading}
-                className="bg-slate-100 text-brand-black px-4 sm:px-6 py-3.5 font-heading font-bold rounded-xl hover:bg-slate-200 transition-all flex items-center gap-2 disabled:opacity-50 whitespace-nowrap"
-              >
-                <RefreshCw size={18} className={loading ? 'animate-spin' : ''} strokeWidth={2} />
-                <span className="hidden sm:inline">Refresh</span>
-              </button>
-            </div>
+            {/* Export */}
+            <button
+              onClick={exportToCSV}
+              className="bg-brand-black text-white px-5 py-3 font-semibold text-sm rounded-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+            >
+              <Download size={16} strokeWidth={2} />
+              Export CSV
+            </button>
           </div>
 
           {/* Results Info */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-slate-100 text-sm">
-            <div className="font-body text-slate-600">
-              Showing <span className="font-semibold text-brand-black">{filteredOrders.length}</span> of{' '}
-              <span className="font-semibold text-brand-black">{orders.length}</span> orders
-              {searchQuery && <span className="text-brand-red ml-1">(filtered)</span>}
-            </div>
-            <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-slate-600">Paid: <span className="font-semibold">{filteredOrders.filter(o => o.paymentStatus === 'PAID').length}</span></span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                <span className="text-slate-600">Pending: <span className="font-semibold">{filteredOrders.filter(o => o.paymentStatus === 'PENDING_PAYMENT').length}</span></span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                <span className="text-slate-600">Cancelled: <span className="font-semibold">{filteredOrders.filter(o => o.paymentStatus === 'CANCELLED').length}</span></span>
-              </div>
-            </div>
+          <div className="mt-4 pt-4 border-t border-slate-100 font-body text-sm text-slate-500">
+            Showing <span className="font-semibold text-brand-black">{filteredOrders.length}</span> of{' '}
+            <span className="font-semibold text-brand-black">{orders.length}</span> orders
+            {searchQuery && <span className="text-brand-red ml-1">(filtered)</span>}
           </div>
         </div>
 
