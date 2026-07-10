@@ -34,6 +34,7 @@ const EMPTY_PRODUCT_FORM: ProductFormData = {
   description: '',
   images: [],
   bannerImage: '',
+  sizes: [],
   regularPrice: 0,
   preorderPrice: 0,
   deliveryFee: 200,
@@ -72,6 +73,7 @@ export default function AdminPage() {
   const [productFormError, setProductFormError] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingBannerImage, setUploadingBannerImage] = useState(false);
+  const [sizeInput, setSizeInput] = useState('');
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
   const [showDeleteProductConfirm, setShowDeleteProductConfirm] = useState(false);
   const [isDeletingProduct, setIsDeletingProduct] = useState(false);
@@ -297,6 +299,7 @@ export default function AdminPage() {
     setEditingProductId(null);
     setProductForm(EMPTY_PRODUCT_FORM);
     setProductFormError(null);
+    setSizeInput('');
     setShowProductModal(true);
   };
 
@@ -307,6 +310,7 @@ export default function AdminPage() {
       description: product.description,
       images: product.images,
       bannerImage: product.bannerImage || '',
+      sizes: product.sizes || [],
       regularPrice: product.regularPrice,
       preorderPrice: product.preorderPrice,
       deliveryFee: product.deliveryFee,
@@ -315,6 +319,7 @@ export default function AdminPage() {
       sortOrder: product.sortOrder,
     });
     setProductFormError(null);
+    setSizeInput('');
     setShowProductModal(true);
   };
 
@@ -376,6 +381,21 @@ export default function AdminPage() {
 
   const removeBannerImage = () => {
     setProductForm((prev) => ({ ...prev, bannerImage: '' }));
+  };
+
+  const addSize = () => {
+    const trimmed = sizeInput.trim();
+    if (!trimmed) return;
+    setProductForm((prev) =>
+      prev.sizes.some((s) => s.toLowerCase() === trimmed.toLowerCase())
+        ? prev
+        : { ...prev, sizes: [...prev.sizes, trimmed] }
+    );
+    setSizeInput('');
+  };
+
+  const removeSize = (size: string) => {
+    setProductForm((prev) => ({ ...prev, sizes: prev.sizes.filter((s) => s !== size) }));
   };
 
   const saveProduct = async (e: React.FormEvent) => {
@@ -519,10 +539,11 @@ export default function AdminPage() {
       ? orders 
       : orders.filter(order => order.paymentStatus === filter);
 
-    const headers = ['Order ID', 'Product', 'Name', 'Email', 'Phone', 'Quantity', 'Unit Price', 'Amount', 'Payment Status', 'Delivery Method', 'Delivery Status', 'Delivery Address', 'Delivery City', 'Delivery Postal Code', 'Created At'];
+    const headers = ['Order ID', 'Product', 'Size', 'Name', 'Email', 'Phone', 'Quantity', 'Unit Price', 'Amount', 'Payment Status', 'Delivery Method', 'Delivery Status', 'Delivery Address', 'Delivery City', 'Delivery Postal Code', 'Created At'];
     const rows = filteredOrders.map(order => [
       order.orderId,
       order.productName || 'N/A',
+      order.size || 'N/A',
       order.name,
       order.email,
       order.phone,
@@ -1010,6 +1031,11 @@ export default function AdminPage() {
                       <p className="font-body text-sm font-semibold text-brand-black truncate">
                         {order.productName || 'Unknown product'}
                       </p>
+                      {order.size && (
+                        <span className="shrink-0 bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-full">
+                          Size: {order.size}
+                        </span>
+                      )}
                     </div>
 
                     {/* Row 2: Name + Amount */}
@@ -1133,6 +1159,9 @@ export default function AdminPage() {
                             <ShoppingBag size={14} className="text-brand-red shrink-0" strokeWidth={2} />
                             <div>
                               <p className="font-body font-semibold text-brand-black">{order.productName || 'Unknown product'}</p>
+                              {order.size && (
+                                <p className="font-body text-xs text-slate-500">Size: {order.size}</p>
+                              )}
                               {order.unitPrice != null && (
                                 <p className="font-body text-xs text-slate-500">LKR {order.unitPrice.toLocaleString()} / unit</p>
                               )}
@@ -1633,6 +1662,54 @@ export default function AdminPage() {
                         disabled={uploadingBannerImage}
                       />
                     </label>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block font-body text-sm font-medium text-slate-700 mb-1">
+                    Sizes (optional) - customers pick one at checkout if any are added
+                  </label>
+                  <div className="flex gap-2 mb-2">
+                    <input
+                      type="text"
+                      value={sizeInput}
+                      onChange={(e) => setSizeInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addSize();
+                        }
+                      }}
+                      className="flex-1 bg-slate-50 border-transparent rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-red"
+                      placeholder="e.g. S, M, L, XL"
+                    />
+                    <button
+                      type="button"
+                      onClick={addSize}
+                      className="px-4 py-2.5 bg-slate-100 text-brand-black font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  {productForm.sizes.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {productForm.sizes.map((size) => (
+                        <span
+                          key={size}
+                          className="inline-flex items-center gap-1.5 bg-slate-100 text-brand-black text-sm font-semibold px-3 py-1.5 rounded-full"
+                        >
+                          {size}
+                          <button
+                            type="button"
+                            onClick={() => removeSize(size)}
+                            className="text-slate-500 hover:text-red-600"
+                            aria-label={`Remove size ${size}`}
+                          >
+                            <X size={12} strokeWidth={3} />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
 

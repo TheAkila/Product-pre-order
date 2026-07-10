@@ -40,6 +40,7 @@ export async function GET() {
         productId: data.productId,
         productName: data.productName,
         unitPrice: data.unitPrice,
+        size: data.size || undefined,
         name: data.name,
         email: data.email,
         phone: data.phone,
@@ -126,6 +127,15 @@ export async function POST(request: NextRequest) {
     }
     const product = productSnap.data();
 
+    // Validate the selected size against the product's configured sizes, if any
+    const productSizes: string[] = Array.isArray(product.sizes) ? product.sizes : [];
+    if (productSizes.length > 0 && !productSizes.includes(body.size || '')) {
+      return NextResponse.json(
+        { error: 'Please select a valid size' },
+        { status: 400 }
+      );
+    }
+
     // Calculate amount from the authoritative product record
     const deliveryFee = body.deliveryMethod === 'DELIVER' ? (product.deliveryFee ?? 0) : 0;
     const amount = (product.preorderPrice * body.quantity) + deliveryFee;
@@ -135,6 +145,7 @@ export async function POST(request: NextRequest) {
       productId: body.productId,
       productName: product.name,
       unitPrice: product.preorderPrice,
+      ...(productSizes.length > 0 && { size: body.size }),
       name: body.name.trim(),
       email: body.email.trim(),
       phone: body.phone.trim(),

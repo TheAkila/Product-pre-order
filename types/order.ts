@@ -12,6 +12,7 @@ export interface Order {
   productId: string;
   productName: string;
   unitPrice: number;
+  size?: string;
   name: string;
   email: string;
   phone: string;
@@ -32,6 +33,7 @@ export interface OrderFormData {
   productId: string;
   productName: string;
   unitPrice: number;
+  size?: string;
   name: string;
   email: string;
   phone: string;

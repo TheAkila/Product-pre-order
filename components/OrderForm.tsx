@@ -53,6 +53,9 @@ export default function OrderForm({ product }: { product: Product }) {
       if (!formData.phone.trim()) {
         throw new Error('Please enter your phone number');
       }
+      if (product.sizes.length > 0 && !formData.size) {
+        throw new Error('Please select a size');
+      }
       if (formData.quantity < 1) {
         throw new Error('Quantity must be at least 1');
       }
@@ -172,7 +175,28 @@ export default function OrderForm({ product }: { product: Product }) {
               />
             </div>
 
-            
+            {/* Size */}
+            {product.sizes.length > 0 && (
+              <div>
+                <label htmlFor="size" className="flex items-center gap-2 font-body text-sm font-medium text-slate-700 mb-2">
+                  <Ruler size={16} strokeWidth={2} />
+                  Size
+                </label>
+                <select
+                  id="size"
+                  value={formData.size || ''}
+                  onChange={(e) => setFormData({ ...formData, size: e.target.value })}
+                  className="input-seamless w-full"
+                  required
+                  disabled={isSubmitting}
+                >
+                  <option value="" disabled>Select a size</option>
+                  {product.sizes.map((size) => (
+                    <option key={size} value={size}>{size}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* Quantity */}
             <div>

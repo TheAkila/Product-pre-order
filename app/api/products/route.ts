@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
       description: (body.description || '').trim(),
       images,
       bannerImage: body.bannerImage || '',
+      sizes: Array.isArray(body.sizes) ? body.sizes.map((s) => s.trim()).filter(Boolean) : [],
       regularPrice: Number(body.regularPrice),
       preorderPrice: Number(body.preorderPrice),
       deliveryFee: Number(body.deliveryFee) || 0,

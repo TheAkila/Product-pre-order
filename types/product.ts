@@ -7,6 +7,7 @@ export interface Product {
   description: string;
   images: string[]; // up to MAX_PRODUCT_IMAGES URLs, first is the cover image
   bannerImage?: string; // optional image shown above the order form on the product page
+  sizes: string[]; // optional list of size options, e.g. ["S", "M", "L"]. Empty = no size selector.
   regularPrice: number;
   preorderPrice: number;
   deliveryFee: number;
@@ -22,6 +23,7 @@ export interface ProductFormData {
   description: string;
   images: string[];
   bannerImage: string;
+  sizes: string[];
   regularPrice: number;
   preorderPrice: number;
   deliveryFee: number;
